@@ -13,8 +13,8 @@ order: 2
 - `src/app/page.tsx` هي الصفحة الوحيدة، وتُصيّر `AuditWorkspace` — وهي مساحة العمل كاملة.
 - `layout.tsx` الجذري يُغلّف كل الصفحات بـ [`AppShell`](/docs/architecture/components#appshell)
   (شريط علوي فقط، بلا شريط جانبي) ويمرّر حالة الفحص عبر `AuditProvider`.
-- `src/app/api/audit/route.ts` هو مسار الخادم الوحيد: `POST /api/audit`، يربط الطبقة الدلالية
-  بنموذج Cloudflare Workers AI.
+- `src/app/api/audit/route.ts` هو مسار الخادم الوحيد: `POST /api/audit`، يخدم الطبقة الدلالية
+  («L3») وحدها بسلسلة نماذج **عبر مزوّدين** («OpenRouter» وربط «Cloudflare Workers AI»).
 
 لا توجد مسارات مثل `/01-input` أو `/06-results`، ولا يوجد مركز توثيق `/docs` داخل التطبيق.
 

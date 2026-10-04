@@ -20,7 +20,7 @@ mawzun-project/
 │   │   ├── layout.tsx        # الجذر: RTL + الخطوط + AppShell + AuditProvider
 │   │   ├── page.tsx          # الصفحة الوحيدة: AuditWorkspace
 │   │   └── api/audit/
-│   │       └── route.ts      # POST /api/audit (ربط نموذج Workers AI)
+│   │       └── route.ts      # POST /api/audit (سلسلة نماذج L3 عبر مزوّدين)
 │   ├── components/
 │   │   ├── audit/            # مساحة العمل: AuditWorkspace، الأقسام الخمسة، parts
 │   │   ├── layout/           # AppShell, TopBar, SearchModal, SettingsModal
@@ -30,7 +30,7 @@ mawzun-project/
 │   │   └── ToastContext.tsx  # الإشعارات العابرة
 │   └── lib/
 │       ├── audit/            # محرّك الفحص ثلاثي الطبقات
-│       │   ├── constraint-bank.ts     # القيود الخمس وأصولها
+│       │   ├── constraint-bank.ts     # القيود الـ20 وأصولها
 │       │   ├── ruling-strength.ts     # جدول قوة الحكم
 │       │   ├── layer1-deterministic.ts
 │       │   ├── layer2-lexical.ts

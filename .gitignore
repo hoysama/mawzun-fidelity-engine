@@ -22,6 +22,12 @@
 
 # env files (can opt-in for committing if needed)
 .env*
+# Wrangler's local secrets file is named `.dev.vars`, which `.env*` does NOT
+# match. Without this line a local OpenRouter key would be committed silently.
+.dev.vars
+.dev.vars.*
+# …but a committed template with no values is useful and safe.
+!.dev.vars.example
 
 # vercel
 .vercel
