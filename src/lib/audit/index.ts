@@ -268,6 +268,7 @@ export async function runAudit(input: AuditInput, options: AuditRunOptions = {})
     checked,
     input.sourceText,
     input.derivedText,
+    input.workType,
   );
 
   const result: AuditResult = {

@@ -17,7 +17,7 @@
  * says so in its reason rather than silently widening what it claims to cover.
  */
 
-import type { AuditResult, ContentLevel, CoverageNote, Finding, LayerId } from "./types";
+import type { AuditResult, ContentLevel, CoverageNote, Finding, LayerId, WorkType } from "./types";
 
 export type VerdictState = AuditResult["verdict"];
 
@@ -89,6 +89,47 @@ export function scopeNotes(coverage: readonly CoverageNote[]): string[] {
     .map((note) => note.reason);
 }
 
+/** The operation's name as a reader sees it. */
+const WORK_LABEL: Readonly<Record<string, string>> = {
+  translate: "الترجمة",
+  summarize: "التلخيص",
+  paraphrase: "إعادة الصياغة",
+};
+
+/** The letters and digits of a text, so punctuation and layout are not read as content. */
+const contentSize = (text: string): number => (text.match(/[\p{L}\p{N}]/gu) ?? []).length;
+
+/**
+ * Whether the derived text is too short for the operation it declares.
+ *
+ * Completeness is not a dimension this bank checks: the constraints verify the
+ * presences they know about, not the absences they do not. So a translation that
+ * drops a whole clause reaches the end looking clean, and «faithful» would read
+ * as a clearance this engine never gave.
+ *
+ * The bound is a heuristic and the wording says so — it cannot name what was
+ * lost, only refuse to vouch for what was never examined. A summary is held
+ * loose because compressing is its purpose; a translation and a paraphrase are
+ * held to carrying the whole.
+ */
+function completenessGap(workType: WorkType, source: string, derived: string): string | null {
+  const sourceSize = contentSize(source);
+  const derivedSize = contentSize(derived);
+  // Below this the ratio says more about the text's brevity than about its content.
+  if (sourceSize < 40) return null;
+
+  const ratio = derivedSize / sourceSize;
+  const floor = workType === "summarize" ? 0.1 : 0.45;
+  if (ratio >= floor) return null;
+
+  const percent = Math.round((1 - ratio) * 100);
+  return (
+    `الاكتمال بُعد غير مفحوص في هذا البنك: قيوده تتحقق من حضور ما تعرفه، لا من غياب ما لا تعرفه. ` +
+    `والمشتق أقصر من الأصل بنحو ${percent}٪، وعمل «${WORK_LABEL[workType] ?? workType}» يعدّ بحمل الكل — ` +
+    `فلا يُشهد له بالأمانة وهو بهذا النقص، ويحتاج مراجعة بشرية للاكتمال.`
+  );
+}
+
 export function computeVerdict(
   level: ContentLevel,
   findings: readonly Finding[],
@@ -96,6 +137,7 @@ export function computeVerdict(
   checkedTotal: number,
   source: string,
   derived: string,
+  workType: WorkType = "translate",
 ): { verdict: VerdictState; reason: string } {
   const scope = scopeNotes(coverage);
   const scopeClause = scope.length > 0 ? ` نطاق الفحص في هذا التشغيل: ${scope.join(" ")}` : "";
@@ -146,6 +188,14 @@ export function computeVerdict(
         "النص يحمل اقتباسًا قرآنيًا غير مفحوص أو غير مربوط بموضع معتمد، فلا يصح اعتبار النقل أمينًا وهو غير مفحوص. التفصيل في ملاحظات التغطية." +
         scopeClause,
     };
+  }
+
+  // Before certifying, ask whether this run may certify at all. The constraints
+  // that found nothing are silent about the dimension they never examined, and a
+  // faithful verdict is a clearance a reader will act on.
+  const gap = completenessGap(workType, source, derived);
+  if (gap) {
+    return { verdict: "needs_revision", reason: gap + scopeClause };
   }
 
   return {
