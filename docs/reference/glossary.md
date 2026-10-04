@@ -40,5 +40,5 @@ order: 2
 | `AuditProvider` | مزوّد حالة الفحص: المدخلات، والنتيجة، والسجل، والتحقق |
 | مرساة القسم | معرّف المرساة `#step-N` الذي يربط المرحلة بقسمها في الصفحة |
 
-راجع [فحص أمانة النقل](/docs/workflow/fidelity-audit) و[مسار التدقيق](/docs/workflow/audit-pipeline)
-و[مبدأ الحماية الدلالية](/docs/workflow/semantic-guard) لسياق استخدام هذه المصطلحات.
+راجع [فحص أمانة النقل](../workflow/fidelity-audit.md) و[مسار التدقيق](../workflow/audit-pipeline.md)
+و[مبدأ الحماية الدلالية](../workflow/semantic-guard.md) لسياق استخدام هذه المصطلحات.

@@ -31,7 +31,7 @@ order: 1
 
 - **إيجابيات:** تثبيت أسرع، ملف قفل واحد، سلوك موحّد بين الفريق و CI.
 - **سلبيات:** حاجز دخول بسيط لمن اعتاد npm.
-- **التخفيف:** توثيق واضح في [التركيب والتشغيل](/docs/getting-started/installation) و[الأوامر](/docs/getting-started/scripts).
+- **التخفيف:** توثيق واضح في [التركيب والتشغيل](../getting-started/installation.md) و[الأوامر](../getting-started/scripts.md).
 
 ## المراجع
 

@@ -11,7 +11,7 @@ order: 2
 يعتمد المشروع على App Router في Next.js 16، لكن التنقّل اليوم لا يعتمد على مسارات مراحل:
 
 - `src/app/page.tsx` هي الصفحة الوحيدة، وتُصيّر `AuditWorkspace` — وهي مساحة العمل كاملة.
-- `layout.tsx` الجذري يُغلّف كل الصفحات بـ [`AppShell`](/docs/architecture/components#appshell)
+- `layout.tsx` الجذري يُغلّف كل الصفحات بـ [`AppShell`](./components.md#appshell)
   (شريط علوي فقط، بلا شريط جانبي) ويمرّر حالة الفحص عبر `AuditProvider`.
 - `src/app/api/audit/route.ts` هو مسار الخادم الوحيد: `POST /api/audit`، يخدم الطبقة الدلالية
   («L3») وحدها بسلسلة نماذج **عبر مزوّدين** («OpenRouter» وربط «Cloudflare Workers AI»).
@@ -41,13 +41,13 @@ export const STAGES: readonly Stage[] = [
 `stages.ts` لا يُصدر دوال مساعدة ولا ثوابت أطراف: صادراته هي النوع `Stage` والمصفوفة الثابتة
 `STAGES` فحسب. فالمرساة تُبنى عند الاستهلاك كـ ``#${stage.id}``، وترتيب القسم يُحسب محليًا بـ
 `STAGES.findIndex((s) => s.id === id)` بدل دالة مشتركة. راجع
-[`parts.tsx`](/docs/architecture/components#shared-primitives-partsttsx) حيث يُبنى `Stepper`،
+[`parts.tsx`](./components.md#shared-primitives-partsttsx) حيث يُبنى `Stepper`،
 و`TopBar` حيث تُختار روابط التنقّل الأربعة من `STAGES` بالفهرس.
 
 ### من يستهلكها؟
 
-- [`Stepper`](/docs/architecture/components#stepper) — يبني شريط المراحل ويحسب الحالة النشطة.
-- [`TopBar`](/docs/architecture/components#topbar) — يبني روابط التنقّل إلى المراسي.
+- [`Stepper`](./components.md#stepper) — يبني شريط المراحل ويحسب الحالة النشطة.
+- [`TopBar`](./components.md#topbar) — يبني روابط التنقّل إلى المراسي.
 - `SearchModal` — يدرج الأقسام الخمسة في نتائج البحث.
 
 ولأن الجميع يقرأ من نفس المصفوفة، فإضافة قسم واحد تنعكس فورًا على الواجهات كلها.
@@ -56,11 +56,11 @@ export const STAGES: readonly Stage[] = [
 
 | # | المرساة | القسم | المكوّن |
 | --- | --- | --- | --- |
-| 01 | `#step-1` | الإدخال والتوصيف | [`InputSection`](/docs/architecture/components#inputsection) |
-| 02 | `#step-2` | القيود المعتمدة | [`ConstraintsSection`](/docs/architecture/components#constraintssection) |
-| 03 | `#step-3` | الفحص ثلاثي الطبقات | [`PipelineSection`](/docs/architecture/components#pipelinesection) |
-| 04 | `#step-4` | الحكم التقريري | [`VerdictSection`](/docs/architecture/components#verdictsection) |
-| 05 | `#step-5` | الشهادة والسجل | [`LedgerSection`](/docs/architecture/components#ledgersection) |
+| 01 | `#step-1` | الإدخال والتوصيف | [`InputSection`](./components.md#inputsection) |
+| 02 | `#step-2` | القيود المعتمدة | [`ConstraintsSection`](./components.md#constraintssection) |
+| 03 | `#step-3` | الفحص ثلاثي الطبقات | [`PipelineSection`](./components.md#pipelinesection) |
+| 04 | `#step-4` | الحكم التقريري | [`VerdictSection`](./components.md#verdictsection) |
+| 05 | `#step-5` | الشهادة والسجل | [`LedgerSection`](./components.md#ledgersection) |
 
 `AuditWorkspace` يزرع الأقسام الخمسة بالترتيب داخل حاوية واحدة، ويعرض فوقها شريط جلسة يحمل
 `Stepper`. يُبرز القسم النشط عبر `IntersectionObserver` لا عبر مستمع تمرير.
@@ -71,5 +71,5 @@ export const STAGES: readonly Stage[] = [
 2. أنشئ مكوّن القسم، واستدعِه في `AuditWorkspace` بوسم يحمل `id={stage.id}`.
 3. لا حاجة لتعديل التنقّل — يُحدَّث تلقائيًا من المصفوفة.
 
-راجع [بنية المشروع](/docs/getting-started/project-structure) لموقع هذه الملفات، و
-[محرك التوثيق](/docs/architecture/docs-engine) لتفصيل كتابة التوثيق وفحصه.
+راجع [بنية المشروع](../getting-started/project-structure.md) لموقع هذه الملفات، و
+[محرك التوثيق](./docs-engine.md) لتفصيل كتابة التوثيق وفحصه.

@@ -304,5 +304,5 @@ audit L3 answered by inclusionai/ling-3.0-flash-sante:free (openrouter) — نج
 - المحرك المستدعى هو نفسه الذي يعمل في الموقع الحيّ، لا مسار موازٍ.
 - كل حكم مصحوب بسببه وموضعه ودليله في `results.json`، فيمكن مراجعة أي حالة بالاسم.
 
-انظر أيضًا [مسار التدقيق](/docs/workflow/audit-pipeline) و[فحص أمانة النقل](/docs/workflow/fidelity-audit)
-و[سجل المصادر والأدوات والتراخيص](/docs/reference/sources-and-licences).
+انظر أيضًا [مسار التدقيق](../workflow/audit-pipeline.md) و[فحص أمانة النقل](../workflow/fidelity-audit.md)
+و[سجل المصادر والأدوات والتراخيص](./sources-and-licences.md).

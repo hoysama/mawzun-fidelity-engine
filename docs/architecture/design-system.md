@@ -10,7 +10,7 @@ order: 3
 داخل كتلة `@theme` (اصطلاح Tailwind v4). الأصل المرجعي في `stitch_mawzun/mawzun_semantic_guard/DESIGN.md`.
 
 > **قاعدة ذهبية:** لا تُكتب قيم لون أو مقاس مباشرة في المكوّنات؛ استخدم دائماً أصناف الرموز
-> (`bg-primary`, `text-headline-lg`, `p-space-md`…). راجع [ADR-0003](/docs/adr/0003-design-tokens).
+> (`bg-primary`, `text-headline-lg`, `p-space-md`…). راجع [ADR-0003](../adr/0003-design-tokens.md).
 
 ## الألوان
 

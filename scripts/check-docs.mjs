@@ -73,22 +73,29 @@ for (const section of SECTIONS) {
   }
 }
 
-const linkPattern = /\]\((\/docs\/[^)#\s]+)(#[^)\s]*)?\)/g;
-for (const { file } of docs) {
-  const text = fs.readFileSync(path.join(REPO_ROOT, file), "utf8");
-  for (const match of text.matchAll(linkPattern)) {
-    if (!slugs.has(match[1])) errors.push(`${file}: broken internal link "${match[1]}"`);
-  }
-}
+/**
+ * Internal links are repository-relative paths ending in `.md`, because that is
+ * the only form that resolves when a reader browses the repository: a
+ * leading-slash path is site-absolute, so `/docs/reference/measurement` 404s
+ * while `../reference/measurement.md` opens. Each link is resolved against the
+ * directory of the file carrying it, the way a viewer does.
+ */
+const pageFiles = new Set(docs.map((doc) => doc.file));
+pageFiles.add("docs/README.md");
+pageFiles.add("README.md");
 
-const landing = path.join(DOCS_ROOT, "README.md");
-if (!fs.existsSync(landing)) {
-  errors.push("missing landing page: docs/README.md");
-} else {
-  const text = fs.readFileSync(landing, "utf8");
+const linkPattern = /\]\((\.{0,2}\/[^)#\s]+\.md)(#[^)\s]*)?\)/g;
+
+for (const file of [...docs.map((doc) => doc.file), "docs/README.md", "README.md"]) {
+  const full = path.join(REPO_ROOT, file);
+  if (!fs.existsSync(full)) continue;
+  const text = fs.readFileSync(full, "utf8");
   for (const match of text.matchAll(linkPattern)) {
-    if (match[1] !== "/docs" && !slugs.has(match[1])) {
-      errors.push(`docs/README.md: broken internal link "${match[1]}"`);
+    const resolved = path.posix.normalize(
+      path.posix.join(path.posix.dirname(file), match[1]),
+    );
+    if (!pageFiles.has(resolved)) {
+      errors.push(`${file}: broken internal link "${match[1]}" (resolves to ${resolved})`);
     }
   }
 }

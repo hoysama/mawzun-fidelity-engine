@@ -34,7 +34,7 @@ bun dev
 
 ثم افتح [http://localhost:3000](http://localhost:3000) في المتصفح. تعرض الصفحة الجذرية `/`
 **مساحة العمل كاملة في صفحة واحدة**: خمسة أقسام مرقّمة (`#step-1` … `#step-5`) بلا مسارات
-مراحل ولا شريط جانبي. انظر [التوجيه والأقسام](/docs/architecture/routing-and-stages).
+مراحل ولا شريط جانبي. انظر [التوجيه والأقسام](../architecture/routing-and-stages.md).
 
 ## كيف يفرض المشروع Bun؟
 
@@ -52,14 +52,14 @@ bun run docs:check   # سلامة التوثيق: ترويسات + ترتيب + 
 bun run engine:check # تحقق سلوكي من محرك الفحص
 ```
 
-راجع [الأوامر والسكربتات](/docs/getting-started/scripts) لبقية الأوامر، و
+راجع [الأوامر والسكربتات](./scripts.md) لبقية الأوامر، و
 [الخطوات التالية](#الخطوات-التالية) لبدء التطوير.
 
 ## الخطوات التالية
 
-1. اطّلع على [بنية المشروع](/docs/getting-started/project-structure).
-2. اقرأ [الاصطلاحات البرمجية](/docs/reference/conventions) قبل كتابة أي كود.
-3. راجع [مسار التدقيق](/docs/workflow/audit-pipeline) لفهم منطق الفحص.
+1. اطّلع على [بنية المشروع](./project-structure.md).
+2. اقرأ [الاصطلاحات البرمجية](../reference/conventions.md) قبل كتابة أي كود.
+3. راجع [مسار التدقيق](../workflow/audit-pipeline.md) لفهم منطق الفحص.
 
 ## استكشاف الأخطاء
 

@@ -57,7 +57,7 @@ mawzun-project/
 ### `src/app/`
 يعتمد على **App Router** في Next.js 16، لكن لا مسارات مراحل: `page.tsx` تُصيّر مساحة العمل
 كاملة، و`layout.tsx` يمرّر الحالة ويغلّف بالهيكل. المسار الوحيد على الخادم هو `api/audit`.
-التنسيقات العامة ورموز التصميم في [globals.css](/docs/architecture/design-system).
+التنسيقات العامة ورموز التصميم في [globals.css](../architecture/design-system.md).
 
 ### `src/components/`
 - **`audit/`** — مساحة العمل والقسم الواحد: `AuditWorkspace`, `InputSection`, `ConstraintsSection`,
@@ -68,9 +68,9 @@ mawzun-project/
 
 ### `src/lib/`
 - **`audit/`** — المحرك كله: بنك القيود، جدول قوة الحكم، الطبقات 1–3، الحكم، السجل، والموحّد.
-  نقطة الدخول `runAudit`. راجع [مسار التدقيق](/docs/workflow/audit-pipeline).
+  نقطة الدخول `runAudit`. راجع [مسار التدقيق](../workflow/audit-pipeline.md).
 - **`stages.ts`** — مصدر الحقيقة الوحيد للأقسام الخمسة ومراسيها، يستهلكه الشريط العلوي وشريط
-  المراحل والبحث. راجع [التوجيه والأقسام](/docs/architecture/routing-and-stages).
+  المراحل والبحث. راجع [التوجيه والأقسام](../architecture/routing-and-stages.md).
 
 ### `stitch_mawzun/`
 مراجع التصميم الأصلية المُصدَّرة من Stitch. التصدير الذي وُلدت منه رموز التصميم المستخدمة
@@ -80,7 +80,7 @@ mawzun-project/
 
 ### `archive/`
 لقطات الملفات قبل أي تعديل أو حذف، منظّمة بتاريخ `YYYYMMDD`. إلزامية وفق
-[قواعد المشروع](/docs/reference/conventions#الوسوم-والأرشفة). المجلد **غير متعقَّب في Git**
+[قواعد المشروع](../reference/conventions.md#الوسوم-والأرشفة). المجلد **غير متعقَّب في Git**
 ولا يُنشأ إلا عند أخذ لقطة، فهو لا يظهر في شجرة المستودع المستنسخة.
 
 ## ما ليس مضمّناً في Git
