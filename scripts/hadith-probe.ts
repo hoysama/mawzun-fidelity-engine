@@ -1,10 +1,13 @@
 /**
- * A real run on the hadith «إنما الأعمال بالنيات».
+ * Tests for the hadith family: a transmission carried by a hadith rather than a
+ * verse.
  *
- * Three things are worth watching here that a Quranic verse would not show:
- *  - the ruling-force constraint (the hadith restricts validity to the intention),
- *  - what the engine does when a hadith is presented as if it were a verse,
- *  - whether a drifted rendering of it is caught at all.
+ * What these cover that the Quranic tests do not:
+ *  - the ruling-force and isnad constraints on hadith wording,
+ *  - the exclusivity particle «إنما», whose loss widens a confined ruling,
+ *  - what happens when a hadith is presented as if it were a verse: the engine
+ *    must refuse to tie it to an ayah rather than invent one,
+ *  - the work-type scope: a summary is not called drifting for a dropped particle.
  *
  *   bun scripts/hadith-probe.ts
  */
@@ -27,42 +30,71 @@ function input(sourceText: string, derivedText: string): AuditInput {
   };
 }
 
-async function run(label: string, source: string, derived: string) {
-  const { result } = await runAudit(input(source, derived));
-  console.log(`\n── ${label}`);
-  console.log(`   الحكم: ${result.verdict}`);
-  console.log(`   السبب: ${result.reason.slice(0, 180)}`);
-  for (const f of result.findings) {
-    if (f.cls === "preserved") continue;
-    const cite = f.citations?.[0];
-    console.log(
-      `   - ${f.cls.padEnd(9)} ${f.kind.padEnd(9)} «${(f.span ?? "").slice(0, 46)}»` +
-        (cite ? ` [${cite.sourceId}]` : "") +
-        (f.evidence?.note ? ` :: ${f.evidence.note.slice(0, 90)}` : ""),
-    );
-  }
-  for (const c of result.coverage) {
-    console.log(`   · تغطية [${c.layer}/${c.kind}]: ${c.reason.slice(0, 110)}`);
-  }
-  return result;
+let failures = 0;
+function assert(label: string, ok: boolean, detail = "") {
+  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${detail ? " — " + detail : ""}`);
+  if (!ok) failures += 1;
 }
 
-console.log("المدخل: حديث «إنما الأعمال بالنيات» — مستوى (أ)، ترجمة إلى الإنجليزية");
+async function audit(source: string, derived: string) {
+  return (await runAudit(input(source, derived))).result;
+}
 
-await run(
-  "١) ترجمة سليمة",
-  HADITH,
-  "Actions are only by intentions, and every person will have only what he intended.",
-);
+console.log("1) the hadith carried faithfully");
+{
+  const r = await audit(
+    HADITH,
+    "Actions are only by intentions, and every person will have only what he intended.",
+  );
+  console.log("   verdict:", r.verdict);
+  assert("a faithful rendering is not flagged", r.verdict === "faithful", r.verdict);
+}
 
-await run(
-  "٢) ترجمة حوّلت الحكم إلى مقارنة",
-  HADITH,
-  "Intention is more important than the action itself.",
-);
+console.log("2) the hadith turned from a restriction into a comparison");
+{
+  const r = await audit(HADITH, "Intention is more important than the action itself.");
+  const restriction = r.findings.filter((f) => f.kind === "restriction");
+  console.log("   verdict:", r.verdict, "| restriction findings:", restriction.length);
+  assert("the lost exclusivity is reported", restriction.length > 0);
+  assert("the verdict is not faithful", r.verdict !== "faithful");
+  assert("the reason names the restriction", r.reason.includes("الحصر"), r.reason.slice(0, 60));
+}
 
-await run(
-  "٣) الحديث مقدَّم على أنه آية من القرآن",
-  `قال تعالى: ﴿إنما الأعمال بالنيات﴾`,
-  `Allah says: ﴿إنما الأعمال بالنيات﴾`,
-);
+console.log("3) a hadith presented as a verse of the Quran");
+{
+  const r = await audit(
+    "قال تعالى: ﴿إنما الأعمال بالنيات﴾",
+    "Allah says: ﴿إنما الأعمال بالنيات﴾",
+  );
+  const quoteNotes = r.coverage.filter((c) => c.kind === "quote");
+  const attributed = r.findings.filter(
+    (f) => f.kind === "quote" && f.citations?.some((c) => c.ayah !== undefined),
+  );
+  console.log("   verdict:", r.verdict, "| quote coverage notes:", quoteNotes.length);
+  assert("it is not attributed to an ayah", attributed.length === 0);
+  assert(
+    "a note says it could not be tied to the mushaf",
+    quoteNotes.length > 0,
+    quoteNotes[0]?.reason.slice(0, 70),
+  );
+  assert("the verdict is not faithful while it is unverified", r.verdict !== "faithful");
+}
+
+console.log("4) work-type scope: a summary is not flagged for a dropped particle");
+{
+  const { result } = await runAudit({
+    ...input(
+      "قال النبي ﷺ: «إنما الأعمال بالنيات»، رواه البخاري برقم 1.",
+      "The Prophet said: Deeds are judged by intentions. Reported by al-Bukhari, Hadith 1.",
+    ),
+    workType: "summarize",
+  });
+  const drift = result.findings.filter((f) => f.kind === "restriction" && f.cls !== "preserved");
+  const declared = result.coverage.some((c) => c.kind === "restriction");
+  console.log("   verdict:", result.verdict, "| restriction drift findings:", drift.length);
+  assert("a clean summary is not called drifting", drift.length === 0, result.verdict);
+  assert("the scope is declared rather than silent", declared);
+}
+
+console.log(failures === 0 ? "\nhadith tests passed" : `\n${failures} check(s) failed`);
+process.exit(failures === 0 ? 0 : 1);
