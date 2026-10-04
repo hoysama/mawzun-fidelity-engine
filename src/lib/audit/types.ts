@@ -7,6 +7,8 @@
  * an opinion — see docs/workflow/fidelity-audit.md.
  */
 
+import type { Citation } from "./rag-types";
+
 /** What kind of derivation produced the derived text. */
 export type WorkType = "translate" | "summarize" | "paraphrase";
 
@@ -77,6 +79,15 @@ export interface Finding {
     /** Why the classifier reached this classification. */
     readonly note: string;
   };
+  /**
+   * Where this finding's claim can be checked against an approved source.
+   *
+   * Empty when no source could be reached, and the run's coverage notes say why:
+   * an empty list is evidence that nothing was consulted, never agreement. The
+   * passages are read live and attributed rather than stored, per the sources'
+   * own policies — see `rag.ts`.
+   */
+  readonly citations?: readonly Citation[];
 }
 
 /**
