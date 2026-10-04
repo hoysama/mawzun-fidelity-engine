@@ -11,6 +11,7 @@
     "lint": "eslint",
     "engine:check": "bun scripts/engine-check.ts",
     "benchmark": "bun scripts/fidelity-benchmark.ts",
+    "retrieval:check": "bun scripts/live-retrieval-check.ts",
     "docs:check": "node scripts/check-docs.mjs",
     "build:worker": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",

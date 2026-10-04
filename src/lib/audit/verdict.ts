@@ -74,9 +74,18 @@ export function materialGaps(
   return coverage.filter((note) => note.kind === "quote" && quotesPresent);
 }
 
-/** Parts of the check that did not run, named so the verdict states its scope. */
+/**
+ * Parts of the check that did not run, named so the verdict states its scope.
+ *
+ * `reference`-kind notes are informational scope for the quotation check (how
+ * many quotations were compared), not a part that failed to run, so they are
+ * excluded from the reason. A `quote`-kind note is handled separately by
+ * `materialGaps`, because it is a real gap for a text that carries a verse.
+ */
 export function scopeNotes(coverage: readonly CoverageNote[]): string[] {
-  return coverage.filter((note) => note.kind !== "quote").map((note) => note.reason);
+  return coverage
+    .filter((note) => note.kind !== "quote" && note.kind !== "reference")
+    .map((note) => note.reason);
 }
 
 export function computeVerdict(
@@ -133,7 +142,7 @@ export function computeVerdict(
     return {
       verdict: "needs_revision",
       reason:
-        "النص يحمل اقتباسًا قرآنيًا، ومطابقة النص العثماني غير مفعّلة في هذا البناء، فلا يصح اعتبار النقل أمينًا وهو غير مفحوص." +
+        "النص يحمل اقتباسًا قرآنيًا غير مفحوص أو غير مربوط بموضع معتمد، فلا يصح اعتبار النقل أمينًا وهو غير مفحوص. التفصيل في ملاحظات التغطية." +
         scopeClause,
     };
   }

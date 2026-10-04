@@ -23,6 +23,7 @@
 
 import type { Constraint, CoverageNote, Finding } from "./types";
 import { findPhrase, normalizeWithMap, arabicKey } from "./normalize";
+import { packageCitation } from "./rag";
 import { FORCE_PROFILES, forcesConflict, RULING_TERMS, type RulingForce } from "./ruling-strength";
 import type { LayerContext, LayerOutput } from "./layer-context";
 
@@ -112,6 +113,40 @@ function precedingWord(text: string, index: number): string {
   return text.slice(i + 1, end);
 }
 
+/**
+ * The character ranges an author marked as a quotation with the ornate brackets
+ * ﴿…﴾.
+ *
+ * A quoted verse is verified letter for letter by the Quranic quotation check in
+ * layer 1, which owns that span and cites the ayah it matched. Layer 2 reads the
+ * same text as ordinary content, and without this the two layers disagree about
+ * one span: the emphatic «إِنَّ» in «إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» is a
+ * particle a translation is not obliged to carry, and reporting it as a dropped
+ * condition makes a faithful run look like drifting.
+ */
+function quotedSpans(text: string): { start: number; end: number }[] {
+  const spans: { start: number; end: number }[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === "﴿") {
+      if (depth === 0) start = i;
+      depth += 1;
+    } else if (ch === "﴾" && depth > 0) {
+      depth -= 1;
+      if (depth === 0) spans.push({ start, end: i + 1 });
+    }
+  }
+  if (depth > 0) spans.push({ start, end: text.length });
+  return spans;
+}
+
+/** Whether a position in the source falls inside one of the marked quotations. */
+function insideQuote(spans: readonly { start: number; end: number }[], index: number): boolean {
+  return spans.some((span) => index >= span.start && index < span.end);
+}
+
 export function runLayer2(ctx: LayerContext): Layer2Output {
   const findings: Finding[] = [];
   const coverage: CoverageNote[] = [];
@@ -127,6 +162,8 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
   const derivedNorm = normalizeWithMap(ctx.derived, script);
   const sourceSegs = segmentText(ctx.source);
   const derivedSegs = segmentText(ctx.derived);
+  const sourceQuotes = quotedSpans(ctx.source);
+  const quotedKinds = new Set<Constraint["kind"]>(["condition", "ruling"]);
 
   for (const constraint of ctx.bank.constraints) {
     if (constraint.kind !== "term" && constraint.kind !== "ruling" && constraint.kind !== "condition") {
@@ -154,6 +191,13 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
       const formSignature = strictAlef ? alefSignature(form) : "";
       for (const match of findPhrase(sourceNorm, ctx.source, form)) {
         if (strictAlef && alefSignature(match.text) !== formSignature) continue;
+        // A span the author marked as a quotation belongs to the Quranic
+        // quotation check in layer 1, which verifies it letter for letter.
+        // Reading it again as ordinary content invents findings about text that
+        // is already checked: the emphatic «إِنَّ» in «إِنَّ اللَّهَ مَعَ
+        // الصَّابِرِينَ» is not a condition a translation dropped, and a
+        // faithful run must not be reported as drifting because of it.
+        if (quotedKinds.has(constraint.kind) && insideQuote(sourceQuotes, match.start)) continue;
         if (
           constraint.kind === "ruling" &&
           !isNegatorItself &&
@@ -326,7 +370,25 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
     }
   }
 
-  return { findings, coverage, checked, alignment: alignmentKind };
+  // Attach each finding's own rule and approved renderings as its citation,
+  // from the shipped package (local, so no network call and no per-constraint
+  // fan-out). The timestamp is pinned to the run's `now` so a fixed-time run
+  // seals an identical record, which is what makes a replay reproducible.
+  const now = ctx.now ?? new Date().toISOString();
+  const constraintById = new Map(ctx.bank.constraints.map((c) => [c.id, c]));
+  const cited: Finding[] = findings.map((finding) => {
+    if (!finding.constraintId) return finding;
+    const constraint = constraintById.get(finding.constraintId);
+    if (!constraint) return finding;
+    const approved = constraint.approved[ctx.language] ?? [];
+    const citations = packageCitation(constraint.id, constraint.rule, approved).citations.map((c) => ({
+      ...c,
+      retrievedAt: now,
+    }));
+    return { ...finding, citations };
+  });
+
+  return { findings: cited, coverage, checked, alignment: alignmentKind };
 }
 
 function firstMatch(

@@ -17,13 +17,31 @@ import { buildConstraintBank } from "@/lib/audit";
 import { cx } from "@/lib/cx";
 import { t } from "@/lib/typography";
 import type { AuditResult } from "@/lib/audit/types";
-import { CodeChip, FINDING_LABEL, FINDING_TONE, InsetPanel, StatusChip, WorkflowCard } from "./parts";
+import type { Citation } from "@/lib/audit/rag-types";
+import { CitationList, CodeChip, FINDING_LABEL, FINDING_TONE, InsetPanel, StatusChip, WorkflowCard } from "./parts";
 
 const VERDICTS: { id: AuditResult["verdict"]; label: string; latin: string }[] = [
   { id: "faithful", label: "مطابق", latin: "Matched" },
   { id: "needs_revision", label: "يحتاج تعديل", latin: "Needs Revision" },
   { id: "refer", label: "وقف وتحويل", latin: "Stop & Escalate" },
 ];
+
+// Package citations from the shipped document carry no hash (the file is local,
+// not fetched), so the passage is part of the identity: two different
+// constraints must never collapse into one citation row.
+const citationKey = (citation: Citation): string =>
+  `${citation.sourceId}|${citation.url}|${citation.kind}|${citation.passage}`;
+
+/** Keep each passage once, so one source is never printed twice on a verdict. */
+function dedupeCitations(citations: readonly Citation[]): Citation[] {
+  const seen = new Set<string>();
+  return citations.filter((citation) => {
+    const key = citationKey(citation);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
 export function VerdictSection() {
   const audit = useAudit();
@@ -32,6 +50,18 @@ export function VerdictSection() {
 
   const decisive = result?.findings.filter((f) => f.cls !== "preserved") ?? [];
   const first = decisive[0];
+
+  /**
+   * The citations the verdict rests on. The evidence pane prints the first
+   * decisive finding's citations next to the evidence it quotes; the reason
+   * pane prints the rest, so the same passage is never printed twice on one
+   * verdict. Both are read from the findings, never composed here.
+   */
+  const firstCitations = first?.citations ?? [];
+  const firstCitationKeys = new Set(firstCitations.map(citationKey));
+  const verdictCitations = dedupeCitations(
+    decisive.flatMap((finding) => finding.citations ?? []),
+  ).filter((citation) => !firstCitationKeys.has(citationKey(citation)));
 
   /**
    * The suggested replacement, taken from the bank rather than composed here:
@@ -125,6 +155,9 @@ export function VerdictSection() {
               <div className="flex flex-col gap-space-xs rounded-lg border border-outline-variant bg-surface-container-lowest p-space-md shadow-sm md:col-span-2">
                 <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>السبب (Reason)</span>
                 <p className={cx(t.body, "text-on-surface")}>{result.reason}</p>
+                {verdictCitations.length > 0 && (
+                  <CitationList citations={verdictCitations} title="حيث يمكن التحقق من الحكم" />
+                )}
               </div>
             </div>
 
@@ -142,6 +175,9 @@ export function VerdictSection() {
                       {first.evidence.derived || "—"}
                     </blockquote>
                     <p className={cx(t.bodySm, "text-on-surface-variant")}>{first.evidence.note}</p>
+                    {firstCitations.length > 0 && (
+                      <CitationList citations={firstCitations} title="حيث يمكن التحقق من هذه الواقعة" />
+                    )}
                   </div>
                 ) : (
                   <p className={cx(t.bodySm, "text-on-surface-variant")}>

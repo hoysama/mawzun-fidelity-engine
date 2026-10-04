@@ -31,6 +31,43 @@ const LEVELS: { id: ContentLevel; label: string; latin: string }[] = [
   { id: "D", label: "المستوى د", latin: "Personal case" },
 ];
 
+/**
+ * The four levels exactly as the organiser's reference package defines them,
+ * with what موزون does at each one beside them.
+ *
+ * The level is not a severity dial: it decides how far the output may go. At
+ * (أ) a direct, sourced statement is owed; at (ب) certainty must not be claimed
+ * where there is room for difference; at (ج) the answer is bound to what is
+ * approved or referred onward; at (د) no independent ruling may be given at all.
+ * موزون measures transmission, so quoting the level's own wording keeps a
+ * reviewer from reading its verdict as broader than the level allows.
+ */
+const LEVEL_MEANING: Record<ContentLevel, { scope: string; handling: string }> = {
+  A: {
+    scope:
+      "أصول الإسلام وأركانه، والقرآن الكريم، والأحاديث الصحيحة المعتمدة، والسيرة، والعقيدة، والقيم، والمعلومات التعريفية المستقرة.",
+    handling:
+      "فحص كامل: القيود الحتمية والمعجمية، والمطابقة الحرفية للاقتباس القرآني. الأصل في هذا المستوى الإجابة المباشرة الموثقة بالمصدر.",
+  },
+  B: {
+    scope:
+      "شرح المفاهيم، والمقارنات، ومقاصد التشريع، والإجابة عن الأسئلة الفكرية والشبهات العامة.",
+    handling:
+      "فحص كامل، ولا يُوصف الانزياح بحكم شرعي ولا يُبنى عليه قطع؛ يظهر المرجع ولا يُدَّعى القطع فيما يحتمل الخلاف.",
+  },
+  C: {
+    scope:
+      "المسائل العقدية التفصيلية، والخلاف الفقهي، والمسائل الجدلية، والقضايا التاريخية التي تتطلب تحريًا علميًا خاصًا.",
+    handling:
+      "فحص كامل، وكل انزياح يُحال إلى المختص ولا يُبتّ فيه؛ والإجابة مقيَّدة بما هو معتمد أو ببيان وجوده أو بالامتناع.",
+  },
+  D: {
+    scope: "مسائل قانونية، ونزاع أسري، وحكم على واقع فردي، وصحة عقد أو عبادة، وأثر طبي شخصي.",
+    handling:
+      "لا يُفحص ولا يُحكم فيه: النظام يتوقف ويحوّل إلى جهة مؤهلة. الوقف هنا نتيجة معتبرة لا فشل.",
+  },
+};
+
 export const EXAMPLE = {
   sourceText: "لا يجوز بيع الطعام قبل قبضه، ويجب على البائع بيانه للمشتري.",
   derivedText:
@@ -161,6 +198,23 @@ export function InputSection() {
             بنك القيود يحمل مقابلات معتمدة لهاتين اللغتين.
           </span>
         </div>
+      </div>
+
+      <div className="rounded-lg border border-outline-variant bg-surface-container-low p-space-md">
+        <p className={cx(t.labelSm, "font-semibold text-on-surface")}>
+          ضبط الاستجابة — {LEVELS.find((level) => level.id === audit.contentLevel)?.label}
+        </p>
+        <p className={cx(t.bodySm, "mt-space-xs text-on-surface-variant")}>
+          <span className="font-medium text-on-surface">نطاق المستوى في الحزمة: </span>
+          {LEVEL_MEANING[audit.contentLevel].scope}
+        </p>
+        <p className={cx(t.bodySm, "mt-space-xs text-on-surface-variant")}>
+          <span className="font-medium text-on-surface">ما يفعله موزون هنا: </span>
+          {LEVEL_MEANING[audit.contentLevel].handling}
+        </p>
+        <p className={cx(t.bodySm, "mt-space-sm border-t border-outline-variant pt-space-xs text-on-surface-variant")}>
+          موزون أداة مدعومة بالذكاء الاصطناعي: ما يصدره قياسُ أمانةِ نقلٍ بين نصين، لا فتوى، ولا ترجيحٌ لمذهب، ولا حكمٌ على قائل.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-space-lg lg:grid-cols-2">

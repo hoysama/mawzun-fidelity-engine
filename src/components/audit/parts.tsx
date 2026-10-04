@@ -19,6 +19,7 @@ import { t } from "@/lib/typography";
 import { Icon } from "@/components/ui/Icon";
 import { STAGES } from "@/lib/stages";
 import type { Finding } from "@/lib/audit/types";
+import type { Citation } from "@/lib/audit/rag-types";
 
 /** A numbered workflow section: the unit the whole design is built from. */
 export function WorkflowCard({
@@ -279,4 +280,82 @@ export function InsetPanel({ children, className }: { children: ReactNode; class
       {children}
     </div>
   );
+}
+
+/**
+ * The citations attached to one finding: where its claim can actually be read.
+ *
+ * Every field is taken from the citation the retrieval layer produced — the
+ * source's own Arabic label, the quoted passage, the address it was read from
+ * and the moment it was read. Nothing here is composed by the interface, and a
+ * finding that carries no citation renders nothing at all: an empty frame
+ * reads as evidence that was sought and left blank, when the run's coverage
+ * notes are what say a check could not run.
+ */
+export function CitationList({
+  citations,
+  title = "حيث يمكن التحقق",
+}: {
+  citations: readonly Citation[];
+  title?: string;
+}) {
+  if (citations.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-space-xs">
+      <span className={cx(t.code, "text-on-surface-variant")}>{title}</span>
+      <ul className="flex flex-col gap-space-xs">
+        {citations.map((citation, index) => (
+          <li
+            key={index}
+            className="rounded-xs border border-outline-variant bg-surface-container-low p-space-sm"
+          >
+            <div className="flex flex-wrap items-center gap-space-xs">
+              <span className={cx(t.labelSm, "font-semibold text-on-surface")}>{citation.label}</span>
+              <span className={cx(t.code, "text-on-surface-variant")}>{citation.kind}</span>
+              {citation.ayah && (
+                <span dir="ltr" className={cx(t.code, "text-on-surface-variant")}>
+                  {citation.ayah.surah}:{citation.ayah.ayah}
+                </span>
+              )}
+            </div>
+            <blockquote dir="auto" className={cx(t.bodySm, "mt-space-xs text-on-surface")}>
+              «{citation.passage}»
+            </blockquote>
+            <div className="mt-space-xs flex flex-wrap items-baseline gap-x-space-sm gap-y-1 text-on-surface-variant">
+              <CitationAddress url={citation.url} />
+              <span className={t.bodySm}>قُرئ في</span>
+              <span dir="ltr" className={t.code}>
+                {citation.retrievedAt}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/**
+ * The address a passage was read from, as a link only when it is one.
+ *
+ * A network citation carries the exact endpoint it came from, so it is a link
+ * the reviewer can open and check. A locally held document has no address a
+ * browser can reach, so its file name is shown as telemetry rather than as a
+ * link that would 404 — a broken link is a false claim, not a courtesy.
+ */
+function CitationAddress({ url }: { url: string }) {
+  if (/^https?:\/\//i.test(url)) {
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className={cx(t.code, "break-all text-secondary underline underline-offset-2")}
+      >
+        {url}
+      </a>
+    );
+  }
+  return <span className={cx(t.code, "break-all")}>{url}</span>;
 }

@@ -29,9 +29,11 @@ order: 0
 | تريد فهم ما الذي يقيسه موزون وحدوده | [فحص أمانة النقل](/docs/workflow/fidelity-audit) |
 | تريد تفصيل مسار الفحص خطوة بخطوة | [مسار التدقيق](/docs/workflow/audit-pipeline) |
 | تريد فلسفة الضبط ومنع الانزياح | [مبدأ الحماية الدلالية](/docs/workflow/semantic-guard) |
+| تريد معرفة من أين يُسترجع النصّ المعتمد وكيف تُسند كل نتيجة | [الاسترجاع والإحالات](/docs/workflow/rag-retrieval) |
 | تكتب كوداً وتريد الاصطلاحات الملزمة | [الاصطلاحات البرمجية](/docs/reference/conventions) |
 | تبحث عن معنى مصطلح عربي/إنجليزي | [المسرد](/docs/reference/glossary) |
 | تريد معرفة المصادر الشرعية والتراخيص | [سجل المصادر والأدوات والتراخيص](/docs/reference/sources-and-licences) |
+| تريد حالة المصادر المعتمدة التسعة وسياسات استخدامها | [سجل مصادر الاسترجاع وحالاتها](/docs/reference/rag-sources) |
 | تريد الأرقام: كيف يُقاس الأداء وما النتائج | [قياس أمانة النقل](/docs/reference/measurement) |
 | تريد حالة كل مخرج من مخرجات التسليم | [قائمة جاهزية التسليم](/docs/reference/submission-checklist) |
 
@@ -44,10 +46,12 @@ order: 0
   [التوجيه والأقسام](/docs/architecture/routing-and-stages)، [نظام التصميم](/docs/architecture/design-system)،
   [المكوّنات](/docs/architecture/components)، [محرك التوثيق](/docs/architecture/docs-engine).
 - **سير العمل (`workflow/`)** — [فحص أمانة النقل](/docs/workflow/fidelity-audit)،
-  [مسار التدقيق](/docs/workflow/audit-pipeline)، [مبدأ الحماية الدلالية](/docs/workflow/semantic-guard).
+  [مسار التدقيق](/docs/workflow/audit-pipeline)، [مبدأ الحماية الدلالية](/docs/workflow/semantic-guard)،
+  [الاسترجاع والإحالات](/docs/workflow/rag-retrieval).
 - **المراجع (`reference/`)** — [الاصطلاحات البرمجية](/docs/reference/conventions)،
   و[المسرد ثنائي اللغة](/docs/reference/glossary)،
-  و[سجل المصادر والأدوات والتراخيص](/docs/reference/sources-and-licences).
+  و[سجل المصادر والأدوات والتراخيص](/docs/reference/sources-and-licences)،
+  و[سجل مصادر الاسترجاع وحالاتها](/docs/reference/rag-sources).
 - **سجلات القرارات (`adr/`)** — [Bun حصراً](/docs/adr/0001-bun-only)،
   [RTL أولاً](/docs/adr/0002-rtl-first)، [رموز التصميم](/docs/adr/0003-design-tokens).
 

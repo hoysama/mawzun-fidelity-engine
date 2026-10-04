@@ -18,6 +18,7 @@ import { cx } from "@/lib/cx";
 import { t } from "@/lib/typography";
 import type { Finding, LayerId } from "@/lib/audit/types";
 import {
+  CitationList,
   CodeChip,
   FINDING_LABEL,
   FINDING_TONE,
@@ -26,6 +27,7 @@ import {
   StatusChip,
   WorkflowCard,
 } from "./parts";
+import { SourcesPanel } from "./SourcesPanel";
 
 const LAYERS: { id: LayerId; ordinal: string; title: string; latin: string; note: string }[] = [
   {
@@ -64,6 +66,10 @@ export function PipelineSection() {
   const layerFindings = (layer: LayerId) => result?.findings.filter((f) => f.layer === layer) ?? [];
 
   const coverage = result?.coverage ?? [];
+  // How many citations the run actually attached, so the sources panel can say
+  // plainly whether anything was consulted rather than implying agreement.
+  const citationCount =
+    result?.findings.reduce((total, finding) => total + (finding.citations?.length ?? 0), 0) ?? 0;
 
   return (
     <WorkflowCard
@@ -244,6 +250,11 @@ export function PipelineSection() {
                             «{finding.span}»
                           </p>
                         )}
+                        {finding.citations && finding.citations.length > 0 && (
+                          <div className="mt-space-sm">
+                            <CitationList citations={finding.citations} />
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -251,6 +262,8 @@ export function PipelineSection() {
               </table>
             </div>
           )}
+
+          <SourcesPanel citationCount={citationCount} />
 
           <div className="rounded-lg border border-outline-variant bg-surface-container-low p-space-md">
             <div className={cx(t.label, "mb-space-xs font-semibold text-on-surface")}>
