@@ -35,6 +35,7 @@ order: 0
 | تريد معرفة المصادر الشرعية والتراخيص | [سجل المصادر والأدوات والتراخيص](/docs/reference/sources-and-licences) |
 | تريد حالة المصادر المعتمدة التسعة وسياسات استخدامها | [سجل مصادر الاسترجاع وحالاتها](/docs/reference/rag-sources) |
 | تريد الأرقام: كيف يُقاس الأداء وما النتائج | [قياس أمانة النقل](/docs/reference/measurement) |
+| تريد مطابقة المعايير الملزمة الثمانية بمواضعها من موزون | [مطابقة المعيار العلمي الملزم](/docs/reference/binding-standard) |
 | تريد حالة كل مخرج من مخرجات التسليم | [قائمة جاهزية التسليم](/docs/reference/submission-checklist) |
 
 ## أقسام التوثيق
@@ -51,7 +52,8 @@ order: 0
 - **المراجع (`reference/`)** — [الاصطلاحات البرمجية](/docs/reference/conventions)،
   و[المسرد ثنائي اللغة](/docs/reference/glossary)،
   و[سجل المصادر والأدوات والتراخيص](/docs/reference/sources-and-licences)،
-  و[سجل مصادر الاسترجاع وحالاتها](/docs/reference/rag-sources).
+  و[سجل مصادر الاسترجاع وحالاتها](/docs/reference/rag-sources)،
+  و[مطابقة المعيار العلمي الملزم](/docs/reference/binding-standard).
 - **سجلات القرارات (`adr/`)** — [Bun حصراً](/docs/adr/0001-bun-only)،
   [RTL أولاً](/docs/adr/0002-rtl-first)، [رموز التصميم](/docs/adr/0003-design-tokens).
 
