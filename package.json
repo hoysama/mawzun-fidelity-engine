@@ -13,6 +13,7 @@
     "benchmark": "bun scripts/fidelity-benchmark.ts",
     "retrieval:check": "bun scripts/live-retrieval-check.ts",
     "hadith:check": "bun scripts/hadith-probe.ts",
+    "invariant:check": "bun scripts/invariant-check.ts",
     "docs:check": "node scripts/check-docs.mjs",
     "build:worker": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",

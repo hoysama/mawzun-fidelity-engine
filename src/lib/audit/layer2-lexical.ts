@@ -99,7 +99,8 @@ function formsOf(constraint: Constraint): string[] {
  * other layer depends on.
  */
 const ALEF_LIKE = /[\u0623\u0625\u0622\u0671\u0627]/g;
-
+/** Arabic shadda: what makes «إنَّ» emphatic rather than the conditional «إن». */
+const SHADDA = "\u0651";
 function alefSignature(raw: string): string {
   return (raw.match(ALEF_LIKE) ?? []).map((ch) => (ch === "\u0627" ? "-" : ch)).join("");
 }
@@ -165,6 +166,8 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
   const sourceQuotes = quotedSpans(ctx.source);
   const quotedKinds = new Set<Constraint["kind"]>(["condition", "restriction", "ruling"]);
   let declaredRestrictionScope = false;
+  /** Whether the derived text itself is Arabic, whatever the declared target is. */
+  const derivedIsArabic = /[\u0600-\u06FF]/.test(ctx.derived);
 
   for (const constraint of ctx.bank.constraints) {
     if (
@@ -219,6 +222,19 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
       const formSignature = strictAlef ? alefSignature(form) : "";
       for (const match of findPhrase(sourceNorm, ctx.source, form)) {
         if (strictAlef && alefSignature(match.text) !== formSignature) continue;
+        // «إنَّ» with a shadda on the ن is the emphatic particle, not the
+        // conditional «إن». Stripping the diacritics collapses the two onto one
+        // key, and the matcher returns the letters without the mark, so the raw
+        // text just after the match is what tells them apart. Reading the emphatic
+        // as a condition invents a condition the text does not carry, and a hadith
+        // full of «وإنَّ» then reports conditions nobody dropped.
+        if (
+          strictAlef &&
+          arabicKey(form).startsWith("ان") &&
+          ctx.source.slice(match.end, match.end + 2).includes(SHADDA)
+        ) {
+          continue;
+        }
         // A span the author marked as a quotation belongs to the Quranic
         // quotation check in layer 1, which verifies it letter for letter.
         // Reading it again as ordinary content invents findings about text that
@@ -269,15 +285,22 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
           ? firstMatch(forbidden, derivedNorm, ctx.derived, window)
           : null;
         const forbiddenAnywhere = forbiddenInWindow ?? firstMatch(forbidden, derivedNorm, ctx.derived, null);
-        const approvedInWindow = window ? firstMatch(approved, derivedNorm, ctx.derived, window) : null;
-        const approvedAnywhere = approvedInWindow ?? firstMatch(approved, derivedNorm, ctx.derived, null);
+        // A marker in a derived text that is Arabic too is its own rendering: the
+        // approved list exists to carry the marker into another language, so
+        // comparing an Arabic rendering against English equivalents reports a
+        // marker that is plainly there as missing. Identical source and derived
+        // must never be called drifting, whatever the declared target language.
+        const sameScript = derivedIsArabic ? forms : [];
+        const approvedInWindow = window ? firstMatch([...approved, ...sameScript], derivedNorm, ctx.derived, window) : null;
+        const approvedAnywhere =
+          approvedInWindow ?? firstMatch([...approved, ...sameScript], derivedNorm, ctx.derived, null);
 
         if (constraint.kind === "ruling") {
           const sourceForce = forceOf(constraint.id);
           // Read the rendering that actually appears, longest first, so
           // "not recommended" is read as one phrase carrying the dislike force
           // rather than as "recommended" with a negation the matcher never sees.
-          const union = [...new Set([...approved, ...forbidden])];
+          const union = [...new Set([...approved, ...forbidden, ...sameScript])];
           const inWindow = window ? firstMatch(union, derivedNorm, ctx.derived, window) : null;
           const anywhere = inWindow ?? firstMatch(union, derivedNorm, ctx.derived, null);
 
