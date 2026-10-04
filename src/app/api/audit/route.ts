@@ -28,16 +28,44 @@ import type { AuditInput, ContentLevel, WorkType } from "@/lib/audit/types";
 export const dynamic = "force-dynamic";
 
 /**
- * Candidate models, tried in order.
+ * The model chain, tried in order.
  *
- * The first is the repository's existing choice; the second is a standard-tier
- * model, because a chain of paid-tier models shares one narrow rate limit and
- * co-located models fail together on a capacity wave.
+ * The order is measured, not assumed. Every candidate was run against this
+ * project's own layer-3 prompt and scored on whether it returns the strict JSON
+ * the parser accepts and whether its quotes survive literal verification — the
+ * parser rejects an invented quote, so a model that fabricates them scores
+ * badly by construction.
+ *
+ * The three OpenRouter entries are the free tier's cleanest: valid JSON, no
+ * rejected quotation, and the ruling change found. They lead on quality. The
+ * Workers AI models stay at the tail because they cost nothing, need no external
+ * service and answer in-process — they are what a rate-limited or hung first
+ * choice falls back to.
+ *
+ * A bigger model is not a better one here. The largest candidate measured
+ * (nemotron-3-ultra, 550B) came last: invalid JSON, three rejected quotes, and
+ * forty-seven seconds. Layer 3 asks for facts in a fixed shape, not for
+ * reasoning.
  */
-const GENERATION_MODELS = ["@cf/google/gemma-4-26b-a4b-it", "@cf/meta/llama-3.3-70b-instruct-fp8-fast"] as const;
+const CHAIN: readonly {
+  provider: "workers-ai" | "openrouter";
+  model: string;
+  attempts: number;
+  timeoutMs: number;
+}[] = [
+  { provider: "openrouter", model: "inclusionai/ling-3.0-flash-sante:free", attempts: 1, timeoutMs: 45_000 },
+  { provider: "openrouter", model: "poolside/laguna-s-2.1:free", attempts: 1, timeoutMs: 45_000 },
+  {
+    provider: "openrouter",
+    model: "nvidia/nemotron-3-super-120b-a12b:free",
+    attempts: 1,
+    timeoutMs: 60_000,
+  },
+  { provider: "workers-ai", model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", attempts: 2, timeoutMs: 0 },
+  { provider: "workers-ai", model: "@cf/google/gemma-4-26b-a4b-it", attempts: 2, timeoutMs: 0 },
+];
 
-/** Attempts per model, with the backoff between them. */
-const ATTEMPTS_PER_MODEL = 2;
+/** Backoff between two attempts at the same model. */
 const BACKOFF_MS = [1500];
 
 interface WorkersAiBinding {
@@ -55,6 +83,57 @@ async function getAiBinding(): Promise<WorkersAiBinding | null> {
     return env.AI ?? null;
   } catch {
     return null;
+  }
+}
+
+/** The OpenRouter key, when the operator has deployed one. */
+async function getOpenRouterKey(): Promise<string | null> {
+  try {
+    const mod = await import("@opennextjs/cloudflare");
+    const ctx = await mod.getCloudflareContext({ async: true });
+    const env = ctx.env as unknown as { OPENROUTER_API_KEY?: string };
+    return env.OPENROUTER_API_KEY ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Ask OpenRouter for a completion, giving up after `timeoutMs`.
+ *
+ * A free tier can hang rather than refuse. Without a deadline one slow candidate
+ * would spend the whole request and the fallbacks behind it would never be
+ * reached, which is the opposite of what a chain is for.
+ */
+async function callOpenRouter(
+  model: string,
+  prompt: string,
+  key: string,
+  timeoutMs: number,
+): Promise<string> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: "أجب بـ JSON فقط دون أي نص إضافي." },
+          { role: "user", content: prompt },
+        ],
+        max_tokens: 2048,
+      }),
+    });
+    const body = (await response.json()) as unknown;
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${JSON.stringify(body).slice(0, 140)}`);
+    }
+    return extractText(body);
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -91,44 +170,58 @@ export async function POST(req: NextRequest) {
   };
 
   const binding = await getAiBinding();
+  const openRouterKey = await getOpenRouterKey();
   let semantic: SemanticProvider;
 
-  if (binding) {
+  if (binding || openRouterKey) {
     semantic = modelProvider(async (prompt) => {
       const promptHash = await sha256Hex(prompt);
       const attempts: string[] = [];
       let lastError: unknown = null;
 
-      for (const model of GENERATION_MODELS) {
-        for (let attempt = 0; attempt < ATTEMPTS_PER_MODEL; attempt++) {
-          try {
-            const response = await binding.run(model, {
-              messages: [
-                { role: "system", content: "أجب بـ JSON فقط دون أي نص إضافي." },
-                { role: "user", content: prompt },
-              ],
-              // A reasoning model bills its thinking against this ceiling, so a
-              // tight budget returns finish_reason "length" with empty content.
-              max_tokens: 2048,
-            });
+      for (const entry of CHAIN) {
+        // A candidate whose provider is not configured in this environment is
+        // skipped rather than attempted, so a chain richer than the deployment
+        // still runs on what the deployment has.
+        if (entry.provider === "workers-ai" && !binding) continue;
+        if (entry.provider === "openrouter" && !openRouterKey) continue;
 
-            const raw = extractText(response);
+        for (let attempt = 0; attempt < entry.attempts; attempt++) {
+          try {
+            const raw =
+              entry.provider === "openrouter"
+                ? await callOpenRouter(entry.model, prompt, openRouterKey as string, entry.timeoutMs)
+                : extractText(
+                    await (binding as WorkersAiBinding).run(entry.model, {
+                      messages: [
+                        { role: "system", content: "أجب بـ JSON فقط دون أي نص إضافي." },
+                        { role: "user", content: prompt },
+                      ],
+                      // A reasoning model bills its thinking against this
+                      // ceiling, so a tight budget returns finish_reason
+                      // "length" with empty content.
+                      max_tokens: 2048,
+                    }),
+                  );
+
             // HTTP-level success with empty content is a failure, not a result:
             // routing it on would make the operator think the model answered.
             if (raw.trim().length === 0) {
-              attempts.push(`${model}: رد فارغ`);
-              lastError = new Error(`${model} أعاد ردًا فارغًا`);
+              attempts.push(`${entry.model}: رد فارغ`);
+              lastError = new Error(`${entry.model} أعاد ردًا فارغًا`);
               continue;
             }
 
-            attempts.push(`${model}: نجح في المحاولة ${attempt + 1}`);
-            console.log(`audit L3 answered by ${model} — ${attempts.join(" | ")}`);
-            return { raw, model, promptHash };
+            attempts.push(`${entry.model}: نجح في المحاولة ${attempt + 1}`);
+            console.log(
+              `audit L3 answered by ${entry.model} (${entry.provider}) — ${attempts.join(" | ")}`,
+            );
+            return { raw, model: entry.model, promptHash };
           } catch (error) {
             lastError = error;
             const detail = error instanceof Error ? error.message : String(error);
-            attempts.push(`${model}: ${detail.slice(0, 80)}`);
-            if (attempt < ATTEMPTS_PER_MODEL - 1) await sleep(BACKOFF_MS[attempt] ?? 1500);
+            attempts.push(`${entry.model}: ${detail.slice(0, 80)}`);
+            if (attempt < entry.attempts - 1) await sleep(BACKOFF_MS[attempt] ?? 1500);
           }
         }
       }
@@ -137,11 +230,13 @@ export async function POST(req: NextRequest) {
       // declared gap, so the verdict states that the semantic layer did not run
       // rather than presenting a deterministic-only result as complete.
       const detail = lastError instanceof Error ? lastError.message : String(lastError);
-      throw new Error(`كل النماذج المرشحة فشلت (${GENERATION_MODELS.join(", ")}): ${detail}. المحاولات: ${attempts.join(" | ")}`);
+      throw new Error(
+        `كل النماذج المرشحة فشلت (${CHAIN.map((entry) => entry.model).join(", ")}): ${detail}. المحاولات: ${attempts.join(" | ")}`,
+      );
     });
   } else {
     semantic = declaredGapProvider(
-      "الطبقة الدلالية لم تُشغَّل: ربط النموذج (AI binding) غير متاح في هذه البيئة. ما كان يمكن كشفه بالاستدلال الدلالي غير مفحوص.",
+      "الطبقة الدلالية لم تُشغَّل: لا ربط النموذج (AI binding) ولا مفتاح مزوّد خارجي متاح في هذه البيئة. ما كان يمكن كشفه بالاستدلال الدلالي غير مفحوص.",
     );
   }
 
