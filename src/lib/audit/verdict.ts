@@ -25,6 +25,7 @@ const KIND_LABEL: Readonly<Record<string, string>> = {
   term: "المصطلح",
   ruling: "قوة الحكم",
   condition: "الشرط",
+  restriction: "الحصر",
   isnad: "السند",
   number: "الأرقام",
   reference: "الإحالة",

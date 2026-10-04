@@ -163,10 +163,38 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
   const sourceSegs = segmentText(ctx.source);
   const derivedSegs = segmentText(ctx.derived);
   const sourceQuotes = quotedSpans(ctx.source);
-  const quotedKinds = new Set<Constraint["kind"]>(["condition", "ruling"]);
+  const quotedKinds = new Set<Constraint["kind"]>(["condition", "restriction", "ruling"]);
+  let declaredRestrictionScope = false;
 
   for (const constraint of ctx.bank.constraints) {
-    if (constraint.kind !== "term" && constraint.kind !== "ruling" && constraint.kind !== "condition") {
+    if (
+      constraint.kind !== "term" &&
+      constraint.kind !== "ruling" &&
+      constraint.kind !== "condition" &&
+      constraint.kind !== "restriction"
+    ) {
+      continue;
+    }
+
+    // An exclusivity particle is emphasis, and emphasis is a promise a
+    // translation makes. A summary compresses and a paraphrase rewrites by
+    // design; losing the literal «إنما» there weakens the wording, it does not
+    // remove the claim, and calling it drift would flag a clean summary. So the
+    // marker is declared out of scope for those operations rather than judged.
+    // A condition marker is left alone: «إذا» and «ما لم» carry content whose
+    // loss changes the ruling even in a compression, which emphasis does not.
+    if (constraint.kind === "restriction" && ctx.workType && ctx.workType !== "translate") {
+      if (!declaredRestrictionScope) {
+        declaredRestrictionScope = true;
+        coverage.push({
+          layer: "L2",
+          kind: "restriction",
+          reason:
+            `أداة الحصر خارج نطاق هذا العمل (${
+              ctx.workType === "summarize" ? "التلخيص" : "إعادة الصياغة"
+            }): التلخيص يوجز وإعادة الصياغة تعيد القول، فلا يُعدّ غياب الأداة انزياحًا فيه. والحكم المحصور يبقى مفحوصًا في الترجمة.`,
+        });
+      }
       continue;
     }
 
@@ -187,7 +215,7 @@ export function runLayer2(ctx: LayerContext): Layer2Output {
       const isNegatorItself = NEGATORS.has(arabicKey(firstToken));
       // Condition markers are the only forms short and grammatical enough that
       // folding the alefs changes which word they are; see `alefSignature`.
-      const strictAlef = constraint.kind === "condition";
+      const strictAlef = constraint.kind === "condition" || constraint.kind === "restriction";
       const formSignature = strictAlef ? alefSignature(form) : "";
       for (const match of findPhrase(sourceNorm, ctx.source, form)) {
         if (strictAlef && alefSignature(match.text) !== formSignature) continue;

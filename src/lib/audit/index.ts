@@ -213,6 +213,7 @@ export async function runAudit(input: AuditInput, options: AuditRunOptions = {})
     bank: input.bank,
     now: options.now,
     retriever,
+    workType: input.workType,
   };
 
   if (input.contentLevel === "D") {

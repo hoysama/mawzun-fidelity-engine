@@ -19,6 +19,7 @@ const KIND_LABEL: Record<string, string> = {
   term: "المصطلح",
   ruling: "الحكم",
   condition: "الشرط",
+  restriction: "الحصر",
   isnad: "السند",
   number: "الأرقام",
 };
@@ -28,6 +29,7 @@ const FILTERS: { id: string; label: string }[] = [
   { id: "term", label: "المصطلح" },
   { id: "ruling", label: "الحكم" },
   { id: "condition", label: "الشرط" },
+  { id: "restriction", label: "الحصر" },
   { id: "isnad", label: "السند" },
   { id: "number", label: "الأرقام" },
 ];

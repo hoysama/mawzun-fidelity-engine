@@ -200,6 +200,33 @@ export const CONDITION_CONSTRAINTS: readonly Constraint[] = [
   },
 ];
 
+/**
+ * Exclusivity markers: «إنما» and its kin confine a ruling to what follows and
+ * to nothing else.
+ *
+ * The same drift class as a dropped condition, with the same harm. «إنما الأعمال
+ * بالنيات» confines validity to the intention; rendering it as a comparison
+ * between intention and action, or as a general statement, drops the restriction
+ * and widens the ruling. The marker is a grammatical particle, so like the
+ * condition markers it is read with raw-letter strictness, and it is skipped
+ * inside a marked Quranic quotation — «إِنَّمَا» opens verses of its own, and a
+ * verse is the quotation check's business, not this constraint's.
+ */
+export const RESTRICTION_CONSTRAINTS: readonly Constraint[] = [
+  {
+    id: "restriction-marker",
+    kind: "restriction",
+    source: ["إنما", "وإنما", "ليس إلا", "فقط"],
+    rule:
+      "أداة الحصر تقيّد الحكم بما بعدها ولا تعدّيه؛ وإسقاطها يحوّل حكمًا محصورًا إلى حكم عام أو إلى مقارنة، وهو توسيع للحكم بلا دليل. (المعيار: عدم إضافة معنى جديد)",
+    approved: {
+      en: ["only", "but", "nothing but", "merely", "solely", "no more than"],
+    },
+    forbidden: { en: [] },
+    origin: `${STANDARD_ORIGIN} — ${BEHAVIOUR_ORIGIN}`,
+  },
+];
+
 /** Numeric references: verse numbers, hadith numbers, counts. */
 export const NUMBER_CONSTRAINTS: readonly Constraint[] = [
   {
@@ -262,6 +289,7 @@ export function buildConstraintBank(): ConstraintBank {
       ...TERM_CONSTRAINTS,
       ...ISNAD_CONSTRAINTS,
       ...CONDITION_CONSTRAINTS,
+      ...RESTRICTION_CONSTRAINTS,
       ...NUMBER_CONSTRAINTS,
       ...rulingConstraints(),
     ],

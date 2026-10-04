@@ -15,8 +15,8 @@ export type WorkType = "translate" | "summarize" | "paraphrase";
 /** Content level declared by the operator, per the challenge reference package. */
 export type ContentLevel = "A" | "B" | "C" | "D";
 
-/** The five families of constraints imported from the scientific package. */
-export type ConstraintKind = "term" | "ruling" | "condition" | "isnad" | "number";
+/** The six families of constraints imported from the scientific package. */
+export type ConstraintKind = "term" | "ruling" | "condition" | "restriction" | "isnad" | "number";
 
 /** Which check layer produced a finding. */
 export type LayerId = "L1" | "L2" | "L3";

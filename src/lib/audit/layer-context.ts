@@ -12,7 +12,7 @@
  * timestamp — the citation's `retrievedAt` is evidence, so it must not float.
  */
 
-import type { ConstraintBank, ContentLevel, CoverageNote, Finding } from "./types";
+import type { ConstraintBank, ContentLevel, CoverageNote, Finding, WorkType } from "./types";
 import type { Citation, RetrievalOutcome } from "./rag-types";
 
 /** A located Quranic passage: where it is, and the approved text itself. */
@@ -59,6 +59,13 @@ export interface LayerContext {
   readonly language: string;
   readonly level: ContentLevel;
   readonly bank: ConstraintBank;
+  /**
+   * The declared operation. A restriction carried by a grammatical particle is a
+   * promise a translation makes; a summary compresses and a paraphrase rewrites,
+   * so layer 2 declares the particle out of scope there rather than judging its
+   * absence as drift.
+   */
+  readonly workType?: WorkType;
   /** The run timestamp, so a citation's `retrievedAt` is reproducible. */
   readonly now?: string;
   /** Absent when retrieval is disabled; then layer 1 declares that gap. */

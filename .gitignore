@@ -48,3 +48,6 @@ cloudflare-env.d.ts
 # os misc
 .DS_Store
 Thumbs.db
+
+# render scratch: thousands of PNG frames, not a deliverable
+submission/video/frames/
