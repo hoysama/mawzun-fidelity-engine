@@ -43,7 +43,7 @@ export default function RootLayout(props: LayoutProps<"/">) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              '(function(){try{var k="mawzun_theme";var s=localStorage.getItem(k);var m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;var t=s==="dark"||s==="light"?s:(m?"dark":"light");var d=document.documentElement;d.setAttribute("data-theme",t);d.style.colorScheme=t;}catch(e){}})();',
+              '(function(){try{var k="mawzun_theme";var s=localStorage.getItem(k);var t=s==="dark"?"dark":"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.style.colorScheme=t;}catch(e){}})();',
           }}
         />
         {/*
