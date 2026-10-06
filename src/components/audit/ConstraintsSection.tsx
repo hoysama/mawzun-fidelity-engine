@@ -3,17 +3,39 @@
 /**
  * Step 2 — القيود المعتمدة.
  *
- * The constraint bank, rendered as the design's governance table: what the
- * constraint is, where in the approved package it comes from, and which
- * renderings it allows or rules out. Nothing here is generated at runtime —
- * the table is the imported package, and the record carries the same bank.
+ * The constraint bank, rendered as the design's governance table, but the last
+ * column is a RESULT: for every constraint, the state this run actually
+ * measured for it.
+ *
+ * Attribution is by the finding's own `constraintId`, which the engine stamps on
+ * every finding it emits (layer 1 for `isnad` and `number`, layer 2 for `term`,
+ * `ruling`, `condition` and `restriction`). Nothing here is matched by text: an
+ * id is read, or the finding is not attributed. A finding whose `constraintId`
+ * is `null` — a Qur'anic quotation, a numeric reference, a layer-3 semantic
+ * note — belongs to no row of the bank, so it can never make a row claim a
+ * state. A constraint the run produced no attributed finding for stays
+ * «لم يُفحص»: silence is not a match, and an unmeasured constraint is shown as
+ * unmeasured rather than as preserved.
+ *
+ * The approved and forbidden renderings are deliberately absent from this
+ * column — it reports what happened, not what the package allows. They are read
+ * where they still belong, backing the suggested correction in `VerdictSection`.
  */
 
 import { useMemo, useState } from "react";
 import { buildConstraintBank } from "@/lib/audit";
+import { useAudit } from "@/context/AuditContext";
 import { cx } from "@/lib/cx";
 import { t } from "@/lib/typography";
-import { CodeChip, StatusChip, WorkflowCard } from "./parts";
+import type { Finding, FindingClass } from "@/lib/audit/types";
+import { CodeChip, FINDING_TONE, StatusChip, WorkflowCard } from "./parts";
+
+/** The match column's vocabulary: a constraint either travelled, drifted, or was dropped. */
+const MATCH_LABEL = {
+  preserved: "مطابق",
+  shifted: "منزاح",
+  missing: "مفقود",
+} as const;
 
 const KIND_LABEL: Record<string, string> = {
   term: "المصطلح",
@@ -34,20 +56,53 @@ const FILTERS: { id: string; label: string }[] = [
   { id: "number", label: "الأرقام" },
 ];
 
-function renderings(list: Record<string, readonly string[]>): string {
+/**
+ * Which classification outranks which when one constraint carries several
+ * findings. The cell reports the gravest thing the run found for the
+ * constraint, so a single missed item is never hidden by a clean one.
+ */
+const SEVERITY: Record<FindingClass, number> = { preserved: 0, shifted: 1, missing: 2 };
+
+function ConstraintState({ findings }: { findings: readonly Finding[] }) {
+  if (findings.length === 0) {
+    // Never «محفوظ» by default: no attributed finding means the run did not
+    // measure this constraint, whatever the reason.
+    return <StatusChip tone="neutral">لم يُفحص</StatusChip>;
+  }
+
+  const worst = findings.reduce((a, b) => (SEVERITY[b.cls] > SEVERITY[a.cls] ? b : a));
+
   return (
-    Object.entries(list)
-      .filter(([, values]) => values.length > 0)
-      .map(([language, values]) => `${language}: ${values.join(" · ")}`)
-      .join("  |  ") || "—"
+    <div className="flex flex-wrap items-center gap-space-xs">
+      <StatusChip tone={FINDING_TONE[worst.cls]}>{MATCH_LABEL[worst.cls]}</StatusChip>
+      {findings.length > 1 && <CodeChip>×{findings.length}</CodeChip>}
+    </div>
   );
 }
 
 export function ConstraintsSection() {
   const bank = useMemo(() => buildConstraintBank(), []);
+  const { result } = useAudit();
   const [kind, setKind] = useState("all");
 
   const rows = kind === "all" ? bank.constraints : bank.constraints.filter((c) => c.kind === kind);
+
+  /**
+   * The current run's findings, grouped by the constraint they were stamped
+   * with. `null` ids are dropped here on purpose: they are real findings, but
+   * they belong to a quotation or a reference check, not to a bank constraint,
+   * and attributing one to a row would invent a link the engine never made.
+   */
+  const findingsByConstraint = useMemo(() => {
+    const map = new Map<string, Finding[]>();
+    for (const finding of result?.findings ?? []) {
+      if (!finding.constraintId) continue;
+      const list = map.get(finding.constraintId);
+      if (list) list.push(finding);
+      else map.set(finding.constraintId, [finding]);
+    }
+    return map;
+  }, [result]);
 
   return (
     <WorkflowCard
@@ -90,7 +145,7 @@ export function ConstraintsSection() {
               <th className="rounded-r px-space-md py-2.5">التصنيف</th>
               <th className="px-space-md py-2.5">القيد المعتمد ونصه</th>
               <th className="px-space-md py-2.5">المصدر في الحزمة</th>
-              <th className="rounded-l px-space-md py-2.5">المقابلات</th>
+              <th className="rounded-l px-space-md py-2.5">حالة تطابق</th>
             </tr>
           </thead>
           <tbody>
@@ -108,7 +163,6 @@ export function ConstraintsSection() {
                   >
                     {KIND_LABEL[constraint.kind] ?? constraint.kind}
                   </span>
-                  <div className={cx(t.code, "mt-1 text-outline")}>{constraint.id}</div>
                 </td>
                 <td className="px-space-md py-space-md">
                   <p className={cx(t.body, "text-on-surface")}>{constraint.rule}</p>
@@ -122,14 +176,7 @@ export function ConstraintsSection() {
                   {constraint.origin}
                 </td>
                 <td className="px-space-md py-space-md">
-                  <div className="flex flex-col gap-1">
-                    <span className={cx(t.code, "text-moss-700")}>
-                      معتمد: {renderings(constraint.approved)}
-                    </span>
-                    <span className={cx(t.code, "text-error")}>
-                      ممنوع: {renderings(constraint.forbidden)}
-                    </span>
-                  </div>
+                  <ConstraintState findings={findingsByConstraint.get(constraint.id) ?? []} />
                 </td>
               </tr>
             ))}
