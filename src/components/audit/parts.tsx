@@ -3,8 +3,7 @@
 /**
  * Shared primitives for the audit workspace.
  *
- * The design language this file encodes is the product's moss system — the same
- * one the welcome route paints with (`src/components/landing/*`):
+ * The design language this file encodes is the product's moss system:
  * - the brand accent is moss-600, its text steps are moss-700/800, and controls
  *   (buttons, chips, the stepper) are fully rounded pills;
  * - depth stays tonal: flat panels carry a 1px hairline border plus the very
@@ -84,7 +83,7 @@ export function CodeChip({ children, className }: { children: ReactNode; classNa
 export type SemanticTone = "verified" | "revision" | "escalate" | "neutral";
 
 const TONE: Record<SemanticTone, string> = {
-  // Verified / matched — the brand moss, the hue the landing's accents carry.
+  // Verified / matched — the brand moss hue carried by the accents.
   verified: "bg-moss-100 text-moss-800",
   // Needs revision / inconclusive — stays blue, so it reads as neither the moss
   // of a faithful run nor the red of an escalation.

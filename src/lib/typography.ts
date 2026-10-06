@@ -9,9 +9,9 @@
 export const t = {
   /** Page-level statement. */
   display: "font-display-lg text-display-lg",
-  /** Landing hero — the one 46px statement on the welcome route. */
+  /** Large single-statement display step (46px), part of the type ramp. */
   hero: "font-hero text-hero",
-  /** Landing stat figure — the 34px numerals on the welcome route. */
+  /** Large numeric-figure step (34px), part of the type ramp. */
   stat: "font-stat text-stat",
   /** The design's smaller display step (30px) — the workspace masthead. */
   heroSm: "font-hero text-hero-sm",

@@ -150,17 +150,17 @@
 }
 
 /* ------------------------------------------------------------------
-   Landing palette — the moss colour system for the welcome route.
+   Moss palette — the product's colour system.
 
    Namespaced on purpose: every token here is `--color-moss-*`, the two
    type steps are `--text-hero*` / `--text-stat`, and the pill radius is
-   `--radius-pill`. The whole interface speaks this palette now — the welcome
-   route, the audit workspace (`src/components/audit/*`) and the shared chrome
+   `--radius-pill`. The whole interface speaks this palette — the audit workspace
+   (`src/components/audit/*`) and the shared chrome
    (`src/components/layout/*`). The `--color-*` roles declared above still carry
    the surfaces, the hairline structure and the three state hues.
 
-   Values are lifted verbatim from the previous build's compiled sheet
-   (old-landing.css), which emitted this block into `:root, :host`.
+   Values are lifted verbatim from the previous build's compiled sheet,
+   which emitted this block into `:root, :host`.
 ------------------------------------------------------------------- */
 @theme {
   /* Moss — light set. */
@@ -172,7 +172,7 @@
   --color-moss-700: #2e532a;
   --color-moss-800: #274324;
 
-  /* Landing hero/stat type steps. */
+  /* Hero/stat type steps. */
   --text-hero: 46px;
   --text-hero--line-height: 58px;
   --text-hero--letter-spacing: -0.02em;
@@ -188,7 +188,7 @@
   --text-stat--letter-spacing: -0.02em;
   --text-stat--font-weight: 600;
 
-  /* The landing's controls are pills, not the export's 2px rectangles. */
+  /* Controls are pills, not the export's 2px rectangles. */
   --radius-pill: 9999px;
 }
 
@@ -212,7 +212,7 @@
   --font-sans: var(--font-plex-arabic), "IBM Plex Sans Arabic", sans-serif;
   --font-mono: var(--font-jetbrains), "JetBrains Mono", monospace;
 
-  /* Landing roles — same Arabic face, addressed by the landing's own names. */
+  /* Display roles — same Arabic face, addressed by the design's own names. */
   --font-hero: var(--font-plex-arabic), "IBM Plex Sans Arabic", sans-serif;
   --font-stat: var(--font-plex-arabic), "IBM Plex Sans Arabic", sans-serif;
 }
@@ -377,7 +377,7 @@ html[data-theme="dark"] {
   --color-background: #0f1420;
   --color-on-background: #e6eaf2;
 
-  /* Moss — dark set. Shared by the landing, the workspace and the chrome, so
+  /* Moss — dark set. Shared by the workspace and the chrome, so
      every step the interface paints with has a dark counterpart. */
   --color-moss-50: #0e1a12;
   --color-moss-100: #17271c;
