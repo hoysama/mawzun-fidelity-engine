@@ -40,6 +40,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   ```bash
   git branch -d <branch> && git push origin --delete <branch>
   ```
+- **Push the branch to the remote as soon as it is ready — do not let it live only on the working machine.** A branch that exists solely as local commits is lost the moment the working copy disappears, and no amount of later care recovers it. Push first, merge after, then delete.
+- The order is therefore always: commit → push the branch → merge into `main` → push `main` → delete the branch locally AND remotely. A local-only branch is a single point of failure, not a draft.
 
 ## 3) Tags (archiving system) before any edit or deletion
 
