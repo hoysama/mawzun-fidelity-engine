@@ -34,7 +34,7 @@ export function WorkflowCard({
 }: {
   number: number;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   aside?: ReactNode;
   id: string;
   children: ReactNode;
@@ -56,7 +56,7 @@ export function WorkflowCard({
           </div>
           <div className="flex flex-col">
             <h2 className={cx(t.h2, "text-on-surface")}>{title}</h2>
-            <p className={cx(t.bodySm, "text-on-surface-variant")}>{subtitle}</p>
+            {subtitle ? <p className={cx(t.bodySm, "text-on-surface-variant")}>{subtitle}</p> : null}
           </div>
         </div>
         {aside}
