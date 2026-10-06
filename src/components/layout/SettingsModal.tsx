@@ -41,7 +41,7 @@ export function SettingsModal({
       >
         <div className="flex items-center justify-between border-b border-surface-container pb-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-container text-primary">
+            <span className="flex h-7 w-7 items-center justify-center rounded-pill bg-moss-100 text-moss-700">
               <Icon name="tune" className="text-base" />
             </span>
             <span className={cx(t.label, "font-bold text-on-surface")}>أين تُضبط السياسة؟</span>
@@ -49,7 +49,7 @@ export function SettingsModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-outline hover:text-on-surface p-1 rounded-md"
+            className="text-outline hover:text-on-surface p-1 rounded-pill"
             aria-label="إغلاق الإعدادات"
           >
             <Icon name="close" className="text-base" />
@@ -88,7 +88,7 @@ export function SettingsModal({
               toast({ title: "تم مسح تشغيل الفحص الحالي", variant: "info" });
               onClose();
             }}
-            className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-error hover:bg-error-container/40 transition-colors font-label-sm text-xs font-semibold"
+            className="flex items-center justify-center gap-1.5 w-full py-2 rounded-pill text-error hover:bg-error-container/40 transition-colors font-label-sm text-xs font-semibold"
           >
             <Icon name="restart_alt" className="text-sm" />
             مسح المدخلات والسجل الحالي

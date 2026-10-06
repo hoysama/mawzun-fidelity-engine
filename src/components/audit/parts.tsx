@@ -3,12 +3,14 @@
 /**
  * Shared primitives for the audit workspace.
  *
- * The design language this file encodes, from the export checked in at
- * stitch_mawzun/mawzun_semantic_verification_system/ (DESIGN.md and code.html):
- * - depth is tonal: flat panels carry a 1px hairline border plus the very
- *   light `shadow-sm` the reference puts on every card;
+ * The design language this file encodes is the product's moss system — the same
+ * one the welcome route paints with (`src/components/landing/*`):
+ * - the brand accent is moss-600, its text steps are moss-700/800, and controls
+ *   (buttons, chips, the stepper) are fully rounded pills;
+ * - depth stays tonal: flat panels carry a 1px hairline border plus the very
+ *   light `shadow-sm` the design puts on every card;
  * - colour is reserved for state (verified / needs revision / stop & escalate),
- *   not decoration;
+ *   not decoration — the three states keep three distinct hues;
  * - telemetry (ids, hashes, layer codes) is always monospaced;
  * - figures are tabular, because every screen here is a ledger.
  */
@@ -47,7 +49,7 @@ export function WorkflowCard({
           <div
             className={cx(
               t.codeMd,
-              "flex h-7 w-7 shrink-0 items-center justify-center rounded-xs bg-primary text-on-primary",
+              "flex h-7 w-7 shrink-0 items-center justify-center rounded-pill bg-moss-600 text-on-primary",
             )}
           >
             {number}
@@ -70,7 +72,7 @@ export function CodeChip({ children, className }: { children: ReactNode; classNa
     <span
       className={cx(
         t.code,
-        "inline-flex items-center gap-space-xs rounded-xs bg-surface-container px-space-sm py-0.5 text-on-surface-variant",
+        "inline-flex items-center gap-space-xs rounded-pill bg-surface-container px-space-sm py-0.5 text-on-surface-variant",
         className,
       )}
     >
@@ -82,11 +84,12 @@ export function CodeChip({ children, className }: { children: ReactNode; classNa
 export type SemanticTone = "verified" | "revision" | "escalate" | "neutral";
 
 const TONE: Record<SemanticTone, string> = {
-  // Verified / matched
-  verified: "bg-tertiary-fixed/40 text-on-tertiary-fixed-variant",
-  // Needs revision / inconclusive
+  // Verified / matched — the brand moss, the hue the landing's accents carry.
+  verified: "bg-moss-100 text-moss-800",
+  // Needs revision / inconclusive — stays blue, so it reads as neither the moss
+  // of a faithful run nor the red of an escalation.
   revision: "bg-secondary-fixed text-on-secondary-fixed-variant",
-  // Stop & escalate
+  // Stop & escalate — stays red.
   escalate: "bg-error-container text-on-error-container",
   neutral: "bg-surface-container text-on-surface-variant",
 };
@@ -106,7 +109,7 @@ export function StatusChip({
     <span
       className={cx(
         t.labelSm,
-        "inline-flex items-center gap-space-xs rounded-xs px-space-sm py-0.5 font-medium",
+        "inline-flex items-center gap-space-xs rounded-pill px-space-sm py-0.5 font-medium",
         TONE[tone],
         className,
       )}
@@ -185,7 +188,7 @@ export function Stepper({ activeId, unlockedIds }: { activeId: string; unlockedI
                 aria-disabled="true"
                 title="يظهر هذا القسم بعد تنفيذ الفحص"
                 className={cx(
-                  "flex items-center gap-space-xs rounded-xs px-space-md py-1.5 whitespace-nowrap opacity-45",
+                  "flex items-center gap-space-xs rounded-pill px-space-md py-1.5 whitespace-nowrap opacity-45",
                   "bg-surface-container text-on-surface-variant",
                 )}
               >
@@ -207,11 +210,11 @@ export function Stepper({ activeId, unlockedIds }: { activeId: string; unlockedI
               href={`#${stage.id}`}
               aria-current={isActive ? "true" : undefined}
               className={cx(
-                "flex items-center gap-space-xs rounded-xs px-space-md py-1.5 transition-colors whitespace-nowrap",
+                "flex items-center gap-space-xs rounded-pill px-space-md py-1.5 transition-colors whitespace-nowrap",
                 isActive
-                  ? "bg-primary text-on-primary"
+                  ? "bg-moss-600 text-on-primary"
                   : isDone
-                    ? "bg-tertiary-fixed/30 text-on-tertiary-fixed-variant hover:bg-tertiary-fixed/50"
+                    ? "bg-moss-100 text-moss-700 hover:bg-moss-200"
                     : "bg-surface-container text-on-surface hover:bg-surface-container-high",
               )}
             >
@@ -249,7 +252,7 @@ export function HighlightedText({ text, findings }: { text: string; findings: re
             "rounded-xs border-b",
             f.cls === "shifted"
               ? "bg-error-container/60 border-error text-on-surface"
-              : "bg-tertiary-fixed/50 border-tertiary-fixed-dim text-on-surface",
+              : "bg-moss-100 border-moss-200 text-on-surface",
           )}
         >
           {text.slice(f.start, f.end)}
@@ -273,7 +276,7 @@ export function InsetPanel({ children, className }: { children: ReactNode; class
   return (
     <div
       className={cx(
-        "rounded-xs border border-outline-variant bg-surface-container-low p-space-sm",
+        "rounded-lg border border-outline-variant bg-surface-container-low p-space-sm",
         className,
       )}
     >
@@ -308,7 +311,7 @@ export function CitationList({
         {citations.map((citation, index) => (
           <li
             key={index}
-            className="rounded-xs border border-outline-variant bg-surface-container-low p-space-sm"
+            className="rounded-lg border border-outline-variant bg-surface-container-low p-space-sm"
           >
             <div className="flex flex-wrap items-center gap-space-xs">
               <span className={cx(t.labelSm, "font-semibold text-on-surface")}>{citation.label}</span>
@@ -351,7 +354,7 @@ function CitationAddress({ url }: { url: string }) {
         href={url}
         target="_blank"
         rel="noreferrer"
-        className={cx(t.code, "break-all text-secondary underline underline-offset-2")}
+        className={cx(t.code, "break-all text-moss-700 underline underline-offset-2")}
       >
         {url}
       </a>

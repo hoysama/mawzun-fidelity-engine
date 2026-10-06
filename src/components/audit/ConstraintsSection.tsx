@@ -69,9 +69,9 @@ export function ConstraintsSection() {
             onClick={() => setKind(filter.id)}
             className={cx(
               t.labelSm,
-              "rounded-xs px-space-sm py-1 font-medium transition-colors",
+              "rounded-pill px-space-sm py-1 font-medium transition-colors",
               kind === filter.id
-                ? "bg-primary text-on-primary"
+                ? "bg-moss-600 text-on-primary"
                 : "bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container",
             )}
           >
@@ -86,7 +86,7 @@ export function ConstraintsSection() {
       <div className="overflow-x-auto">
         <table className="w-full text-right">
           <thead>
-            <tr className={cx(t.labelSm, "bg-surface-container-low text-on-surface-variant")}>
+            <tr className={cx(t.labelSm, "bg-moss-50 text-on-surface-variant")}>
               <th className="rounded-r px-space-md py-2.5">التصنيف</th>
               <th className="px-space-md py-2.5">القيد المعتمد ونصه</th>
               <th className="px-space-md py-2.5">المصدر في الحزمة</th>
@@ -103,7 +103,7 @@ export function ConstraintsSection() {
                   <span
                     className={cx(
                       t.labelSm,
-                      "inline-flex rounded-xs bg-surface-container px-space-sm py-0.5 font-medium text-on-surface",
+                      "inline-flex rounded-pill bg-moss-100 px-space-sm py-0.5 font-medium text-moss-800",
                     )}
                   >
                     {KIND_LABEL[constraint.kind] ?? constraint.kind}
@@ -123,7 +123,7 @@ export function ConstraintsSection() {
                 </td>
                 <td className="px-space-md py-space-md">
                   <div className="flex flex-col gap-1">
-                    <span className={cx(t.code, "text-on-tertiary-fixed-variant")}>
+                    <span className={cx(t.code, "text-moss-700")}>
                       معتمد: {renderings(constraint.approved)}
                     </span>
                     <span className={cx(t.code, "text-error")}>

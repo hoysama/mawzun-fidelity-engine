@@ -55,11 +55,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className={cx(
                 "pointer-events-auto flex items-start gap-3 rounded-xl p-3.5 shadow-xl backdrop-blur-md border transition-all duration-300 animate-in slide-in-from-bottom-3",
                 isSuccess
-                  ? "bg-surface-container-lowest/95 border-primary/20 text-on-surface"
+                  ? "bg-surface-container-lowest/95 border-moss-600/25 text-on-surface"
                   : isError
                     ? "bg-surface-container-lowest/95 border-error/30 text-on-surface"
                     : isWarning
-                      ? "bg-surface-container-lowest/95 border-tertiary/30 text-on-surface"
+                      ? "bg-surface-container-lowest/95 border-moss-600/30 text-on-surface"
                       : "bg-surface-container-lowest/95 border-outline-variant/40 text-on-surface",
               )}
             >
@@ -67,12 +67,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 className={cx(
                   "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg mt-0.5",
                   isSuccess
-                    ? "bg-primary-fixed/40 text-primary"
+                    ? "bg-moss-100 text-moss-700"
                     : isError
                       ? "bg-error-container text-error"
                       : isWarning
-                        ? "bg-tertiary-fixed text-tertiary"
-                        : "bg-surface-container text-secondary",
+                        ? "bg-moss-200 text-moss-800"
+                        : "bg-surface-container text-moss-700",
                 )}
               >
                 <Icon

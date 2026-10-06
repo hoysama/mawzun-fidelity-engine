@@ -98,12 +98,12 @@ export function VerdictSection() {
             <div
               key={verdict.id}
               className={cx(
-                "flex items-center justify-between rounded-lg p-space-md transition-colors",
+                "flex items-center justify-between rounded-xl p-space-md transition-colors",
                 !result
                   ? "bg-surface-container text-on-surface-variant opacity-60"
                   : isActive
                     ? verdict.id === "faithful"
-                      ? "bg-tertiary-fixed/40 text-on-tertiary-fixed-variant shadow-sm"
+                      ? "bg-moss-100 text-moss-800 shadow-sm"
                       : verdict.id === "needs_revision"
                         ? "bg-secondary-fixed text-on-secondary-fixed-variant shadow-sm"
                         : "bg-error-container text-on-error-container shadow-sm"
@@ -164,11 +164,11 @@ export function VerdictSection() {
                 <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>الدليل</span>
                 {first ? (
                   <div className="flex flex-col gap-space-xs">
-                    <blockquote className={cx(t.body, "rounded-xs bg-surface-container-low p-space-sm italic text-on-surface")}>
+                    <blockquote className={cx(t.body, "rounded-lg bg-surface-container-low p-space-sm italic text-on-surface")}>
                       <span className={cx(t.code, "block text-outline")}>من الأصل</span>
                       {first.evidence.source || "—"}
                     </blockquote>
-                    <blockquote className={cx(t.body, "rounded-xs bg-surface-container-low p-space-sm italic text-on-surface")}>
+                    <blockquote className={cx(t.body, "rounded-lg bg-surface-container-low p-space-sm italic text-on-surface")}>
                       <span className={cx(t.code, "block text-outline")}>من المشتق</span>
                       {first.evidence.derived || "—"}
                     </blockquote>
@@ -214,7 +214,7 @@ export function VerdictSection() {
                 <li
                   key={index}
                   className={cx(
-                    "flex flex-wrap items-center gap-space-sm rounded-xs border border-outline-variant bg-surface-container-lowest p-space-sm",
+                    "flex flex-wrap items-center gap-space-sm rounded-lg border border-outline-variant bg-surface-container-lowest p-space-sm",
                   )}
                 >
                   <StatusChip tone={FINDING_TONE[finding.cls]}>{FINDING_LABEL[finding.cls]}</StatusChip>
@@ -238,7 +238,7 @@ export function VerdictSection() {
               placeholder="اكتب قرارك هنا. القرار جزء من السجل، ويعاد ترميز البصمة عليه."
               className={cx(
                 t.body,
-                "w-full resize-y rounded-xs border border-outline-variant bg-surface-container-lowest p-space-sm text-on-surface focus:border-secondary focus:outline-none",
+                "w-full resize-y rounded-lg border border-outline-variant bg-surface-container-lowest p-space-sm text-on-surface focus:border-moss-500 focus:outline-none",
               )}
             />
             <p className={cx(t.bodySm, "text-on-surface-variant")}>

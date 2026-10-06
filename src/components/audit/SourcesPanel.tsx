@@ -80,7 +80,7 @@ export function SourcesPanel({ citationCount }: { citationCount: number }) {
           return (
             <li
               key={source.id}
-              className="rounded-xs border border-outline-variant bg-surface-container-lowest p-space-sm"
+              className="rounded-lg border border-outline-variant bg-surface-container-lowest p-space-sm"
             >
               <div className="flex flex-wrap items-center justify-between gap-space-xs">
                 <div className="flex flex-wrap items-center gap-space-xs">
@@ -105,7 +105,7 @@ export function SourcesPanel({ citationCount }: { citationCount: number }) {
         })}
       </ul>
 
-      <div className="mt-space-sm rounded-xs border border-outline-variant bg-surface-container-lowest p-space-sm">
+      <div className="mt-space-sm rounded-lg border border-outline-variant bg-surface-container-lowest p-space-sm">
         <p className={cx(t.bodySm, "text-on-surface-variant")}>
           النص القرآني المعتمد يُقرأ حيًّا من{" "}
           <a
@@ -113,7 +113,7 @@ export function SourcesPanel({ citationCount }: { citationCount: number }) {
             target="_blank"
             rel="noreferrer"
             dir="ltr"
-            className="text-secondary underline underline-offset-2"
+            className="text-moss-700 underline underline-offset-2"
           >
             «quranpedia.net»
           </a>

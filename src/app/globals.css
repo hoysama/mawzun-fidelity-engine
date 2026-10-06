@@ -154,9 +154,10 @@
 
    Namespaced on purpose: every token here is `--color-moss-*`, the two
    type steps are `--text-hero*` / `--text-stat`, and the pill radius is
-   `--radius-pill`. Only the landing (`src/app/welcome` and
-   `src/components/landing/*`) uses them; the audit workspace and the
-   shared chrome keep the `--color-*` tokens declared above, untouched.
+   `--radius-pill`. The whole interface speaks this palette now — the welcome
+   route, the audit workspace (`src/components/audit/*`) and the shared chrome
+   (`src/components/layout/*`). The `--color-*` roles declared above still carry
+   the surfaces, the hairline structure and the three state hues.
 
    Values are lifted verbatim from the previous build's compiled sheet
    (old-landing.css), which emitted this block into `:root, :host`.
@@ -376,8 +377,8 @@ html[data-theme="dark"] {
   --color-background: #0f1420;
   --color-on-background: #e6eaf2;
 
-  /* Moss — dark set. The landing is the only consumer, so these live beside
-     the other dark overrides and change nothing else. */
+  /* Moss — dark set. Shared by the landing, the workspace and the chrome, so
+     every step the interface paints with has a dark counterpart. */
   --color-moss-50: #0e1a12;
   --color-moss-100: #17271c;
   --color-moss-200: #2a4431;

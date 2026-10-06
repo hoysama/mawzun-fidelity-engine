@@ -55,7 +55,7 @@ export function ThemeToggle() {
         root.style.colorScheme = target;
       }}
       className={cx(
-        "flex h-9 w-9 items-center justify-center rounded border border-outline-variant text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface",
+        "flex h-9 w-9 items-center justify-center rounded-pill border border-outline-variant text-on-surface-variant transition-colors hover:bg-moss-100 hover:text-moss-800",
       )}
     >
       <Icon name={isDark ? "light_mode" : "dark_mode"} className="text-lg" />

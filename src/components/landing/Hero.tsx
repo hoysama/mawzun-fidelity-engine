@@ -1,16 +1,18 @@
-import Link from "next/link";
 import { cx } from "@/lib/cx";
 import { t } from "@/lib/typography";
 import { SourceEntry } from "@/components/landing/SourceEntry";
 
 /**
- * The welcome hero: the product's one-line claim, a lead line, the single call
- * to action, and the source-text hand-off.
+ * The welcome hero: the product's one-line claim, a lead line, and the
+ * source-text field that hands the reviewer's text to the audit workspace.
+ *
+ * The hero has exactly one action, and it is the field: the reviewer types the
+ * source text and presses «افحص النص» beside it. A second button that navigated
+ * to the same workspace was removed — two controls pointing at one destination
+ * asked the reviewer to choose between the same outcome twice.
  *
  * A server component, so the copy and the claim ship as markup and only the
- * interactive field below crosses into the client bundle. The anchor carries
- * nothing but its own label — the icon font renders a ligature *name* as text,
- * so an icon inside it would put that name into the link's accessible name.
+ * interactive field below crosses into the client bundle.
  */
 export function Hero() {
   return (
@@ -28,17 +30,6 @@ export function Hero() {
           ثلاث طبقات صارمة — حتمية، ومعجمية، ودلالية — ثم حكمٌ واحد بثلاث حالات، وسجلٌّ موثَّق
           بالبصمة قابلٌ لإعادة التشغيل.
         </p>
-        <div>
-          <Link
-            href="/"
-            className={cx(
-              t.label,
-              "inline-flex items-center rounded-pill bg-moss-600 px-space-xl py-3 font-semibold text-on-primary transition-colors hover:bg-moss-700",
-            )}
-          >
-            ابدأ الفحص
-          </Link>
-        </div>
       </div>
 
       <SourceEntry />

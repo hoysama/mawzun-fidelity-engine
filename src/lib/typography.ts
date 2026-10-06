@@ -13,6 +13,8 @@ export const t = {
   hero: "font-hero text-hero",
   /** Landing stat figure — the 34px numerals on the welcome route. */
   stat: "font-stat text-stat",
+  /** The design's smaller display step (30px) — the workspace masthead. */
+  heroSm: "font-hero text-hero-sm",
   /** Section titles inside a workflow card. */
   h2: "font-headline-lg text-headline-lg",
   /** Card and sub-section titles. */

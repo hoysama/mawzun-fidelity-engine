@@ -69,12 +69,10 @@ export function AuditWorkspace() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="w-full bg-surface-container-low px-margin-desktop py-space-md shadow-sm">
+      <div className="w-full border-b border-moss-200 bg-linear-to-b from-moss-50 to-surface-container-lowest px-margin-desktop py-space-md">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-space-md md:flex-row md:items-center">
           <div className="flex items-center gap-space-sm">
-            <span className="h-2.5 w-2.5 rounded-full bg-secondary-container" />
-            <span className={cx(t.h4, "text-primary")}>مَوْزُون | MAWZŪN</span>
-            <span className={cx(t.code, "text-on-surface-variant")}>— مقياس أمانة النقل</span>
+            <span className={cx(t.heroSm, "text-moss-700")}>مقياس أمانة النقل</span>
           </div>
           <Stepper activeId={activeId} unlockedIds={unlockedIds} />
         </div>
@@ -86,7 +84,7 @@ export function AuditWorkspace() {
         {!revealed && (
           <div className="rounded-xl border border-dashed border-outline-variant bg-surface-container-lowest p-space-xl">
             <div className="flex items-start gap-space-md">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xs bg-surface-container text-secondary">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-pill bg-moss-100 text-moss-700">
                 <Icon name="lock" className="text-base" />
               </span>
               <div className="flex flex-col gap-space-xs">
@@ -122,7 +120,7 @@ export function AuditWorkspace() {
         )}
       </div>
 
-      <footer className="w-full bg-surface-container-low py-space-md">
+      <footer className="w-full border-t border-moss-200 bg-moss-50 py-space-md">
         <div
           className={cx(
             t.code,

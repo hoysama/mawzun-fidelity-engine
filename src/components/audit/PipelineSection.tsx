@@ -79,7 +79,7 @@ export function PipelineSection() {
           <span
             className={cx(
               "h-2 w-2 rounded-full",
-              audit.isRunning ? "animate-pulse bg-secondary" : result ? "bg-tertiary-container" : "bg-outline",
+              audit.isRunning ? "animate-pulse bg-moss-500" : result ? "bg-moss-600" : "bg-outline",
             )}
           />
           {audit.isRunning
@@ -104,7 +104,7 @@ export function PipelineSection() {
             >
               <div className="flex flex-col gap-space-sm">
                 <div className="flex items-center justify-between">
-                  <span className={cx(t.labelSm, "font-semibold text-primary")}>{layer.ordinal}</span>
+                  <span className={cx(t.labelSm, "font-semibold text-moss-700")}>{layer.ordinal}</span>
                   {!result ? (
                     <StatusChip tone="neutral">بانتظار التنفيذ</StatusChip>
                   ) : !ran ? (
@@ -144,7 +144,7 @@ export function PipelineSection() {
                                 .join(" · ")}
                             </div>
                           ) : preserved.length > 0 ? (
-                            <div className={cx(t.bodySm, "text-on-tertiary-fixed-variant")}>
+                            <div className={cx(t.bodySm, "text-moss-700")}>
                               نعم، محفوظ: {preserved.map((f) => f.span).join(" · ")}
                             </div>
                           ) : (
@@ -169,7 +169,7 @@ export function PipelineSection() {
                             <span className="truncate text-on-surface-variant">{finding.span || "—"}</span>
                             <span
                               className={
-                                finding.cls === "preserved" ? "text-on-tertiary-fixed-variant" : "text-error"
+                                finding.cls === "preserved" ? "text-moss-700" : "text-error"
                               }
                             >
                               {FINDING_LABEL[finding.cls]}
@@ -213,7 +213,7 @@ export function PipelineSection() {
             <div className="overflow-x-auto">
               <table className="w-full text-right">
                 <thead>
-                  <tr className={cx(t.labelSm, "bg-surface-container-low text-on-surface-variant")}>
+                  <tr className={cx(t.labelSm, "bg-moss-50 text-on-surface-variant")}>
                     <th className="rounded-r px-space-md py-2 font-semibold">الطبقة</th>
                     <th className="px-space-md py-2 font-semibold">النوع</th>
                     <th className="px-space-md py-2 font-semibold">الحالة</th>

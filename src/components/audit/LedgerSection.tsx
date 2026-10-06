@@ -101,11 +101,11 @@ export function LedgerSection() {
               </StatusChip>
             </div>
 
-            <div className="rounded-xs border border-outline-variant bg-surface-container-lowest p-space-md">
+            <div className="rounded-lg border border-outline-variant bg-surface-container-lowest p-space-md">
               <span className={cx(t.code, "block text-on-surface-variant")}>بصمة السجل (SHA-256)</span>
               <span
                 dir="ltr"
-                className={cx(t.code, "mt-1 block break-all font-mono-telemetry text-primary select-all")}
+                className={cx(t.code, "mt-1 block break-all font-mono-telemetry text-moss-800 select-all")}
               >
                 {record.digest}
               </span>
@@ -142,7 +142,7 @@ export function LedgerSection() {
               }}
               className={cx(
                 t.labelSm,
-                "flex w-full items-center justify-center gap-space-xs rounded-xs bg-surface-container py-2 text-on-surface transition-colors hover:bg-surface-container-high",
+                "flex w-full items-center justify-center gap-space-xs rounded-pill bg-surface-container py-2 text-on-surface transition-colors hover:bg-surface-container-high",
               )}
             >
               <Icon name="data_object" className="text-[16px]" />
@@ -153,7 +153,7 @@ export function LedgerSection() {
               onClick={() => void audit.verify()}
               className={cx(
                 t.labelSm,
-                "flex w-full items-center justify-center gap-space-xs rounded-xs bg-primary py-2 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container",
+                "flex w-full items-center justify-center gap-space-xs rounded-pill bg-moss-600 py-2 font-semibold text-on-primary transition-colors hover:bg-moss-700",
               )}
             >
               <Icon name="fact_check" className="text-[16px]" />
@@ -171,7 +171,7 @@ export function LedgerSection() {
           <div className="overflow-x-auto">
             <table className={cx(t.code, "w-full text-right")}>
               <thead>
-                <tr className="bg-surface-container text-on-surface-variant">
+                <tr className="bg-moss-50 text-on-surface-variant">
                   <th className="rounded-r p-space-xs">التسلسل</th>
                   <th className="p-space-xs">العملية المنجزة</th>
                   <th className="p-space-xs">المعرف</th>
@@ -198,7 +198,7 @@ export function LedgerSection() {
               className={cx(
                 "rounded-lg border p-space-sm",
                 audit.verification.ok
-                  ? "border-tertiary-fixed-dim bg-tertiary-fixed/30"
+                  ? "border-moss-500 bg-moss-50"
                   : "border-error bg-error-container/40",
               )}
             >
@@ -215,7 +215,7 @@ export function LedgerSection() {
             </div>
           )}
 
-          <div className="mt-auto rounded-xs border border-outline-variant bg-surface-container-lowest p-space-sm">
+          <div className="mt-auto rounded-lg border border-outline-variant bg-surface-container-lowest p-space-sm">
             <div className={cx(t.bodySm, "flex items-start gap-space-xs text-on-surface-variant")}>
               <Icon name="info" className="mt-0.5 text-[16px] text-outline" />
               <span>

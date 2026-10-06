@@ -105,7 +105,7 @@ export function SearchModal({
       >
         {/* Search header bar */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-surface-container">
-          <Icon name="search" className="text-xl text-primary shrink-0" />
+          <Icon name="search" className="text-xl text-moss-700 shrink-0" />
           <input
             type="text"
             value={query}
@@ -129,14 +129,14 @@ export function SearchModal({
               <Icon name="close" className="text-sm" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block rounded bg-surface-container px-2 py-0.5 font-code-sm text-[11px] text-secondary">
+          <kbd className="hidden sm:inline-block rounded-sm bg-moss-50 px-2 py-0.5 font-code-sm text-[11px] text-moss-700">
             ESC
           </kbd>
           <button
             type="button"
             onClick={onClose}
             aria-label="إغلاق"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-pill text-on-surface-variant transition-colors hover:bg-moss-100 hover:text-moss-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-moss-600"
           >
             <Icon name="close" className="text-lg" />
           </button>
@@ -166,7 +166,7 @@ export function SearchModal({
                   className={cx(
                     "flex items-center justify-between w-full p-3 rounded-xl text-right transition-colors",
                     isSelected
-                      ? "bg-primary-container text-on-primary-container shadow-xs"
+                      ? "bg-moss-600 text-on-primary shadow-xs"
                       : "hover:bg-surface-container-low text-on-surface",
                   )}
                 >
@@ -175,8 +175,8 @@ export function SearchModal({
                       className={cx(
                         "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
                         isSelected
-                          ? "bg-surface-container-lowest text-primary"
-                          : "bg-surface-container text-primary",
+                          ? "bg-moss-50 text-moss-700"
+                          : "bg-moss-100 text-moss-700",
                       )}
                     >
                       <Icon name={item.icon} className="text-base" />
@@ -187,7 +187,7 @@ export function SearchModal({
                         className={cx(
                           t.bodySm,
                           "truncate",
-                          isSelected ? "text-on-primary-container/80" : "text-on-surface-variant",
+                          isSelected ? "text-on-primary/80" : "text-on-surface-variant",
                         )}
                       >
                         {item.subtitle}
@@ -200,8 +200,8 @@ export function SearchModal({
                       t.code,
                       "shrink-0 rounded px-2 py-0.5 text-[10px] mr-2",
                       isSelected
-                        ? "bg-primary/20 text-on-primary-container"
-                        : "bg-surface-container text-secondary",
+                        ? "bg-on-primary/20 text-on-primary"
+                        : "bg-moss-100 text-moss-700",
                     )}
                   >
                     {item.category}
@@ -213,7 +213,7 @@ export function SearchModal({
         </div>
 
         {/* Footer shortcuts */}
-        <div className="flex items-center justify-between px-4 py-2.5 bg-surface-container-low/50 border-t border-surface-container text-[11px] text-secondary">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-moss-50/60 border-t border-moss-200 text-[11px] text-on-surface-variant">
           <div className="flex items-center gap-3">
             <span>
               <kbd className="rounded bg-surface-container-lowest px-1.5 py-0.5 text-on-surface shadow-xs">

@@ -123,9 +123,9 @@ function Pills<T extends string>({
             <span
               className={cx(
                 t.labelSm,
-                "block rounded-xs py-2 px-space-xs text-center shadow-sm transition-colors",
+                "block rounded-pill py-2 px-space-xs text-center shadow-sm transition-colors",
                 value === option.id
-                  ? "bg-primary text-on-primary"
+                  ? "bg-moss-600 text-on-primary"
                   : "bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container",
               )}
             >
@@ -180,7 +180,7 @@ export function InputSection() {
             onChange={(event) => audit.setTargetLanguage(event.target.value)}
             className={cx(
               t.labelSm,
-              "rounded-xs border border-outline-variant bg-surface-container-lowest px-space-sm py-2 text-on-surface",
+              "rounded-lg border border-outline-variant bg-surface-container-lowest px-space-sm py-2 text-on-surface",
             )}
           >
             <option value="en">الإنجليزية</option>
@@ -216,7 +216,7 @@ export function InputSection() {
               htmlFor="original-text"
               className={cx(t.label, "flex items-center gap-space-xs font-semibold text-on-surface")}
             >
-              <span className="h-2 w-2 rounded-full bg-secondary" />
+              <span className="h-2 w-2 rounded-full bg-moss-500" />
               النص الأصلي
             </label>
             <CodeChip>المرجع: الحزمة العلمية المعتمدة</CodeChip>
@@ -230,7 +230,7 @@ export function InputSection() {
             placeholder="الصق النص الشرعي الأصلي هنا."
             className={cx(
               t.body,
-              "w-full resize-y rounded-lg bg-surface-container-low p-space-md leading-relaxed text-on-surface transition-all focus:bg-surface-container-lowest focus:shadow-md focus:outline-none",
+              "w-full resize-y rounded-lg border border-outline-variant bg-surface-container-low p-space-md leading-relaxed text-on-surface transition-colors focus:border-moss-500 focus:bg-surface-container-lowest focus:outline-none",
             )}
           />
           <div className={cx(t.code, "flex items-center justify-between px-1 text-on-surface-variant")}>
@@ -245,7 +245,7 @@ export function InputSection() {
               htmlFor="derived-text"
               className={cx(t.label, "flex items-center gap-space-xs font-semibold text-on-surface")}
             >
-              <span className="h-2 w-2 rounded-full bg-secondary-container" />
+              <span className="h-2 w-2 rounded-full bg-moss-800" />
               النص المشتق
             </label>
             <CodeChip>مخرج خاضع للمراجعة</CodeChip>
@@ -259,7 +259,7 @@ export function InputSection() {
             placeholder="الصق الترجمة أو الملخّص أو إعادة الصياغة هنا."
             className={cx(
               t.body,
-              "w-full resize-y rounded-lg bg-surface-container-low p-space-md leading-relaxed text-on-surface transition-all focus:bg-surface-container-lowest focus:shadow-md focus:outline-none",
+              "w-full resize-y rounded-lg border border-outline-variant bg-surface-container-low p-space-md leading-relaxed text-on-surface transition-colors focus:border-moss-500 focus:bg-surface-container-lowest focus:outline-none",
             )}
           />
           <div className={cx(t.code, "flex items-center justify-between px-1 text-on-surface-variant")}>
@@ -276,7 +276,7 @@ export function InputSection() {
           disabled={audit.isRunning || !ready}
           className={cx(
             t.label,
-            "inline-flex items-center gap-space-xs rounded-xs bg-primary px-space-md py-2 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:opacity-40",
+            "inline-flex items-center gap-space-xs rounded-pill bg-moss-600 px-space-xl py-3 font-semibold text-on-primary transition-colors hover:bg-moss-700 disabled:opacity-40",
           )}
         >
           <Icon name="play_arrow" className="text-base" />
@@ -293,7 +293,7 @@ export function InputSection() {
           }}
           className={cx(
             t.label,
-            "inline-flex items-center gap-space-xs rounded-xs border border-outline-variant px-space-md py-2 font-semibold text-on-surface-variant transition-colors hover:bg-surface-container",
+            "inline-flex items-center gap-space-xs rounded-pill border border-moss-200 px-space-md py-2 font-semibold text-on-surface-variant transition-colors hover:bg-moss-100",
           )}
         >
           <Icon name="experiment" className="text-base" />
@@ -304,7 +304,7 @@ export function InputSection() {
           onClick={audit.reset}
           className={cx(
             t.label,
-            "inline-flex items-center gap-space-xs rounded-xs px-space-sm py-2 text-on-surface-variant transition-colors hover:bg-surface-container",
+            "inline-flex items-center gap-space-xs rounded-pill px-space-sm py-2 text-on-surface-variant transition-colors hover:bg-moss-100",
           )}
         >
           <Icon name="restart_alt" className="text-base" />
