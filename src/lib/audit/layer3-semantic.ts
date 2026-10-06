@@ -5,11 +5,17 @@
  *
  * 1. The model returns **facts, not verdicts** — a list of findings, each with
  *    the question it answers, a classification, and two verbatim quotes.
- * 2. Every quote is checked against the actual text before the finding is
- *    accepted. A quote that does not appear in the source or the derived text
- *    byte-for-byte is rejected, and the rejection is recorded. The model cannot
- *    invent a location, so a fabricated finding cannot reach the verdict.
- * 3. The model never decides the outcome. It fills `Finding[]`, and
+ * 2. A finding is evidence only when it is anchored on **both sides**: a source
+ *    fragment and a derived fragment, each found verbatim in its own text after
+ *    the project's normalization. A quote the text does not contain is rejected,
+ *    and the rejection is recorded — the model cannot invent a location.
+ * 3. Two classes are rejected outright because the two texts can never settle
+ *    them, however the model words them: an `attribution` (isnad) claim — a
+ *    hadith grade, a chain, a narrator's soundness — which is a fact about the
+ *    world *outside* the two inputs, and a `missing` claim, which by definition
+ *    has no derived span to verify. Both are recorded as declined claims, never
+ *    admitted on the model's word.
+ * 4. The model never decides the outcome. It fills `Finding[]`, and
  *    `verdict.ts` computes the verdict from those findings with a fixed rule.
  *
  * The provider is injected, so the engine stays pure and testable: the browser
@@ -111,6 +117,29 @@ export function parseSemanticFindings(
       invalid++;
       continue;
     }
+    // An attribution (isnad) claim — a hadith grade, a chain, a narrator's
+    // soundness — is a fact about the world outside these two texts. No
+    // verbatim span can settle it, so it is never admitted on the model's
+    // word: the claim is rejected and recorded, even when its quotes are real.
+    if (f.question === "attribution") {
+      rejected.push(
+        `واقعة «السند» (attribution) مرفوضة: صحة النسبة ودرجة الثبوت تقعان خارج النصين، فلا يمكن التحقق منهما من الأصل والمشتق ولو طابق الاقتباس.${claimSuffix(f)}`,
+      );
+      invalid++;
+      continue;
+    }
+
+    // A `missing` claim points at nothing in the derived text, so the engine
+    // cannot verify it mechanically against the two texts. It is rejected and
+    // recorded rather than condemning a translation on the model's word.
+    if (f.cls === "missing") {
+      rejected.push(
+        `واقعة «مفقود» مرفوضة: لا مقطع مقابل في المشتق يُربط إليه الغياب، فلا يمكن إثبات النقص من النصين.${claimSuffix(f)}`,
+      );
+      invalid++;
+      continue;
+    }
+
     if (typeof f.source_quote !== "string" || typeof f.derived_quote !== "string") {
       rejected.push("اقتباس ناقص: كل واقعة يجب أن تحمل نصًا من الأصل ونصًا من المشتق.");
       invalid++;
@@ -124,27 +153,9 @@ export function parseSemanticFindings(
       continue;
     }
 
-    if (f.cls === "missing") {
-      // A missing item has no derived span by definition; accept it only with
-      // an empty derived quote so the model cannot point at unrelated text.
-      if (f.derived_quote.trim().length > 0) {
-        rejected.push("واقعة «مفقود» يجب أن يكون اقتباس المشتق فيها فارغًا.");
-        invalid++;
-        continue;
-      }
-      findings.push({
-        layer: "L3",
-        constraintId: null,
-        kind: QUESTION_TO_KIND[f.question],
-        cls: "missing",
-        start: 0,
-        end: 0,
-        span: "",
-        evidence: { source: sourceHit.text, derived: "", note: f.note ?? "" },
-      });
-      continue;
-    }
-
+    // The boundary where a model claim becomes engine evidence: it must be
+    // anchored on both sides — the source fragment and the derived fragment,
+    // each verbatim in its own text. Nothing passes it the texts cannot show.
     const derivedHit = findPhrase(derivedNorm, ctx.derived, f.derived_quote)[0];
     if (!derivedHit) {
       rejected.push(`اقتباس المشتق غير موجود في النص حرفيًا: «${truncate(f.derived_quote)}»`);
@@ -205,6 +216,18 @@ function truncate(s: string): string {
 }
 
 /**
+ * The model's own words for a claim the engine declined, so the rejection
+ * carries what was claimed and not only that something was refused.
+ */
+function claimSuffix(f: Partial<SemanticRawFinding>): string {
+  const note = typeof f.note === "string" ? f.note.trim() : "";
+  if (note.length > 0) return ` ادعاء النموذج: «${truncate(note)}»`;
+  const quote = typeof f.source_quote === "string" ? f.source_quote.trim() : "";
+  if (quote.length > 0) return ` الاقتباس المذكور: «${truncate(quote)}»`;
+  return "";
+}
+
+/**
  * The provider used when no model binding is available (browser, tests, a
  * static export). It produces no findings and says so — an absent layer must
  * never look like a passed layer.
@@ -236,12 +259,19 @@ export function modelProvider(caller: SemanticCaller): SemanticProvider {
       const { raw, model, promptHash } = await caller(prompt, ctx);
       const { findings, rejected, invalid } = parseSemanticFindings(raw, ctx);
 
+      // Every declined claim is named here, and this note travels into the
+      // sealed record, so a reader sees what the model claimed and that the
+      // engine refused it. A rejection is never a silent discard.
       const coverage: CoverageNote[] = [];
-      if (invalid > 0) {
+      if (invalid > 0 || rejected.length > 0) {
         coverage.push({
           layer: "L3",
           kind: "condition",
-          reason: `رُفض ${invalid} بندًا من مخرج النموذج لعدم مطابقته الصيغة أو لاقتباس غير موجود في النص. التفصيل في سجل الرفض.`,
+          reason:
+            `رُفض ${Math.max(invalid, rejected.length)} ادعاءً من مخرج النموذج:` +
+            " لا يُقبل كدليل إلا ما جُعل على مقطع محقق حرفيًا من الأصل ومقطع محقق حرفيًا من المشتق،" +
+            " ولا يُقبل سؤال لا تحسمه النصوص (فالسند والغياب كذلك)." +
+            ` التفصيل: ${rejected.join(" | ") || "—"}`,
         });
       }
 
