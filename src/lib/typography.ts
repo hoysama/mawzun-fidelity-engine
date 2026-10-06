@@ -9,6 +9,10 @@
 export const t = {
   /** Page-level statement. */
   display: "font-display-lg text-display-lg",
+  /** Landing hero — the one 46px statement on the welcome route. */
+  hero: "font-hero text-hero",
+  /** Landing stat figure — the 34px numerals on the welcome route. */
+  stat: "font-stat text-stat",
   /** Section titles inside a workflow card. */
   h2: "font-headline-lg text-headline-lg",
   /** Card and sub-section titles. */

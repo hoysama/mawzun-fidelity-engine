@@ -14,9 +14,14 @@ import { SourceEntry } from "@/components/landing/SourceEntry";
  */
 export function Hero() {
   return (
-    <section className="grid items-center gap-space-xl lg:grid-cols-2">
+    <section className="relative isolate grid items-center gap-space-xl overflow-hidden rounded-2xl border border-outline-variant bg-linear-to-b from-moss-50 to-surface-container-lowest px-margin-desktop py-space-xl lg:grid-cols-2">
+      {/* The band's soft moss glow, exactly as the previous build carried it. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 end-[-8%] -z-10 h-72 w-72 rounded-pill bg-moss-100/70 blur-3xl"
+      />
       <div className="flex flex-col gap-space-md">
-        <h1 className={cx(t.display, "text-on-surface")}>
+        <h1 className={cx(t.hero, "text-balance text-on-surface")}>
           نقيس أمانة النقل بين الأصل وما اشتُقّ منه
         </h1>
         <p className={cx(t.bodyLg, "max-w-prose text-on-surface-variant")}>
@@ -28,7 +33,7 @@ export function Hero() {
             href="/"
             className={cx(
               t.label,
-              "inline-flex items-center rounded-xs bg-primary px-space-md py-2 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container",
+              "inline-flex items-center rounded-pill bg-moss-600 px-space-xl py-3 font-semibold text-on-primary transition-colors hover:bg-moss-700",
             )}
           >
             ابدأ الفحص

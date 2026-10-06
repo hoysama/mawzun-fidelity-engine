@@ -52,7 +52,7 @@ export function SourceEntry() {
         placeholder="الصق النص الأصلي هنا…"
         className={cx(
           t.body,
-          "w-full resize-y rounded-lg border border-outline-variant bg-surface-container-low p-space-md leading-relaxed text-on-surface transition-colors focus:border-secondary focus:bg-surface-container-lowest focus:outline-none",
+          "w-full resize-y rounded-lg border border-outline-variant bg-surface-container-low p-space-md leading-relaxed text-on-surface transition-colors focus:border-moss-500 focus:bg-surface-container-lowest focus:outline-none",
         )}
       />
       <button
@@ -60,7 +60,7 @@ export function SourceEntry() {
         onClick={handOff}
         className={cx(
           t.label,
-          "inline-flex items-center justify-center gap-space-xs rounded-xs bg-primary px-space-md py-2 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container",
+          "inline-flex items-center justify-center gap-space-xs rounded-pill bg-moss-600 px-space-xl py-3 font-semibold text-on-primary transition-colors hover:bg-moss-700",
         )}
       >
         <Icon name="play_arrow" className="text-base" />

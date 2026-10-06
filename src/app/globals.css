@@ -149,6 +149,48 @@
   --text-code-sm--letter-spacing: 0.03em;
 }
 
+/* ------------------------------------------------------------------
+   Landing palette — the moss colour system for the welcome route.
+
+   Namespaced on purpose: every token here is `--color-moss-*`, the two
+   type steps are `--text-hero*` / `--text-stat`, and the pill radius is
+   `--radius-pill`. Only the landing (`src/app/welcome` and
+   `src/components/landing/*`) uses them; the audit workspace and the
+   shared chrome keep the `--color-*` tokens declared above, untouched.
+
+   Values are lifted verbatim from the previous build's compiled sheet
+   (old-landing.css), which emitted this block into `:root, :host`.
+------------------------------------------------------------------- */
+@theme {
+  /* Moss — light set. */
+  --color-moss-50: #f3f7ef;
+  --color-moss-100: #e2eede;
+  --color-moss-200: #c6ddbe;
+  --color-moss-500: #4a8340;
+  --color-moss-600: #386832;
+  --color-moss-700: #2e532a;
+  --color-moss-800: #274324;
+
+  /* Landing hero/stat type steps. */
+  --text-hero: 46px;
+  --text-hero--line-height: 58px;
+  --text-hero--letter-spacing: -0.02em;
+  --text-hero--font-weight: 600;
+
+  --text-hero-sm: 30px;
+  --text-hero-sm--line-height: 40px;
+  --text-hero-sm--letter-spacing: -0.015em;
+  --text-hero-sm--font-weight: 600;
+
+  --text-stat: 34px;
+  --text-stat--line-height: 40px;
+  --text-stat--letter-spacing: -0.02em;
+  --text-stat--font-weight: 600;
+
+  /* The landing's controls are pills, not the export's 2px rectangles. */
+  --radius-pill: 9999px;
+}
+
 /* Font families reference next/font CSS variables, so they must be inlined.
    Arabic maps to IBM Plex Sans Arabic and expands line-height by 25–30%
    relative to Latin, so diacritics are not clipped. */
@@ -168,6 +210,10 @@
 
   --font-sans: var(--font-plex-arabic), "IBM Plex Sans Arabic", sans-serif;
   --font-mono: var(--font-jetbrains), "JetBrains Mono", monospace;
+
+  /* Landing roles — same Arabic face, addressed by the landing's own names. */
+  --font-hero: var(--font-plex-arabic), "IBM Plex Sans Arabic", sans-serif;
+  --font-stat: var(--font-plex-arabic), "IBM Plex Sans Arabic", sans-serif;
 }
 
 @layer base {
@@ -329,4 +375,18 @@ html[data-theme="dark"] {
 
   --color-background: #0f1420;
   --color-on-background: #e6eaf2;
+
+  /* Moss — dark set. The landing is the only consumer, so these live beside
+     the other dark overrides and change nothing else. */
+  --color-moss-50: #0e1a12;
+  --color-moss-100: #17271c;
+  --color-moss-200: #2a4431;
+  --color-moss-300: #3d6244;
+  --color-moss-400: #5b8c5e;
+  --color-moss-500: #6fb36a;
+  --color-moss-600: #86c97f;
+  --color-moss-700: #a6dca0;
+  --color-moss-800: #c3ecc0;
+  --color-moss-900: #d8f5d6;
+  --color-moss-950: #edfaf0;
 }

@@ -51,7 +51,7 @@ export function StepsSection() {
             <span
               className={cx(
                 t.codeMd,
-                "flex h-7 w-7 items-center justify-center rounded-xs bg-primary text-on-primary",
+                "flex h-7 w-7 items-center justify-center rounded-pill bg-moss-600 text-on-primary",
               )}
             >
               {step.ordinal}
@@ -62,11 +62,11 @@ export function StepsSection() {
         ))}
       </ol>
 
-      <dl className="grid grid-cols-2 gap-space-md rounded-xl border border-outline-variant bg-surface-container-low p-space-lg md:grid-cols-3 lg:grid-cols-6">
+      <dl className="grid grid-cols-2 gap-space-md rounded-xl border border-moss-200 bg-moss-50 p-space-lg md:grid-cols-3 lg:grid-cols-6">
         {FIGURES.map((figure) => (
           <div key={figure.label} className="flex flex-col gap-space-xs">
-            <dt className={cx(t.bodySm, "text-on-surface-variant")}>{figure.label}</dt>
-            <dd className={cx(t.h2, "text-primary")}>{figure.value}</dd>
+            <dt className={cx(t.bodySm, "text-moss-700")}>{figure.label}</dt>
+            <dd className={cx(t.stat, "text-moss-800")}>{figure.value}</dd>
           </div>
         ))}
       </dl>
