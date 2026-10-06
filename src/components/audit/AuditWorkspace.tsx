@@ -3,19 +3,17 @@
 /**
  * The audit workspace.
  *
- * One scrolling page with a numbered section per stage, matching the design:
- * a session bar carrying the stepper, the five workflow cards in order, and the
- * footer. Navigation is anchor-based, so a stage is a section rather than a
- * route and the stepper can never point at something that does not exist.
+ * One scrolling page with a numbered section per stage: a heading band carrying
+ * the page title, then the five workflow cards in order. A stage is a section
+ * rather than a route.
  */
 
-import { useEffect, useRef, useState } from "react";
-import { STAGES, unlockedStageIds } from "@/lib/stages";
+import { useEffect, useRef } from "react";
 import { useAudit } from "@/context/AuditContext";
 import { cx } from "@/lib/cx";
 import { t } from "@/lib/typography";
 import { Icon } from "@/components/ui/Icon";
-import { StatusChip, Stepper } from "@/components/audit/parts";
+import { StatusChip } from "@/components/audit/parts";
 import { InputSection } from "@/components/audit/InputSection";
 import { ConstraintsSection } from "@/components/audit/ConstraintsSection";
 import { PipelineSection } from "@/components/audit/PipelineSection";
@@ -24,7 +22,6 @@ import { LedgerSection } from "@/components/audit/LedgerSection";
 
 export function AuditWorkspace() {
   const audit = useAudit();
-  const [activeId, setActiveId] = useState(STAGES[0].id);
 
   /**
    * Steps two to five describe the output of a run, so they stay out of the page
@@ -32,29 +29,6 @@ export function AuditWorkspace() {
    * to show a reviewer — it reads as a finding of nothing.
    */
   const revealed = audit.result !== null;
-  const unlockedIds = unlockedStageIds(revealed);
-
-  // Highlight the step whose section occupies the reading position. Re-run when
-  // the later sections are mounted, or there would be nothing to observe.
-  useEffect(() => {
-    const sections = unlockedIds
-      .map((id) => document.getElementById(id))
-      .filter((element): element is HTMLElement => element !== null);
-    if (sections.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActiveId(visible.target.id);
-      },
-      { rootMargin: "-20% 0px -60% 0px", threshold: [0.1, 0.5, 1] },
-    );
-
-    for (const section of sections) observer.observe(section);
-    return () => observer.disconnect();
-  }, [unlockedIds]);
 
   // When a run completes, the newly opened sections are below the fold. Move the
   // reader to the first of them rather than leaving the result off-screen.
@@ -74,7 +48,6 @@ export function AuditWorkspace() {
           <div className="flex items-center gap-space-sm">
             <span className={cx(t.heroSm, "text-moss-700")}>مقياس أمانة النقل</span>
           </div>
-          <Stepper activeId={activeId} unlockedIds={unlockedIds} />
         </div>
       </div>
 
