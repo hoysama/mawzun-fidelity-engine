@@ -42,30 +42,11 @@ const LEVELS: { id: ContentLevel; label: string }[] = [
  * موزون measures transmission, so quoting the level's own wording keeps a
  * reviewer from reading its verdict as broader than the level allows.
  */
-const LEVEL_MEANING: Record<ContentLevel, { scope: string; handling: string }> = {
-  A: {
-    scope:
-      "أصول الإسلام وأركانه، والقرآن الكريم، والأحاديث الصحيحة المعتمدة، والسيرة، والعقيدة، والقيم، والمعلومات التعريفية المستقرة.",
-    handling:
-      "فحص كامل: القيود الحتمية والمعجمية، والمطابقة الحرفية للاقتباس القرآني. الأصل في هذا المستوى الإجابة المباشرة الموثقة بالمصدر.",
-  },
-  B: {
-    scope:
-      "شرح المفاهيم، والمقارنات، ومقاصد التشريع، والإجابة عن الأسئلة الفكرية والشبهات العامة.",
-    handling:
-      "فحص كامل، ولا يُوصف الانزياح بحكم شرعي ولا يُبنى عليه قطع؛ يظهر المرجع ولا يُدَّعى القطع فيما يحتمل الخلاف.",
-  },
-  C: {
-    scope:
-      "المسائل العقدية التفصيلية، والخلاف الفقهي، والمسائل الجدلية، والقضايا التاريخية التي تتطلب تحريًا علميًا خاصًا.",
-    handling:
-      "فحص كامل، وكل انزياح يُحال إلى المختص ولا يُبتّ فيه؛ والإجابة مقيَّدة بما هو معتمد أو ببيان وجوده أو بالامتناع.",
-  },
-  D: {
-    scope: "مسائل قانونية، ونزاع أسري، وحكم على واقع فردي، وصحة عقد أو عبادة، وأثر طبي شخصي.",
-    handling:
-      "لا يُفحص ولا يُحكم فيه: النظام يتوقف ويحوّل إلى جهة مؤهلة. الوقف هنا نتيجة معتبرة لا فشل.",
-  },
+const LEVEL_MEANING: Record<ContentLevel, string> = {
+  A: "فحص كامل: القيود الحتمية والمعجمية، والمطابقة الحرفية للاقتباس القرآني. الأصل في هذا المستوى الإجابة المباشرة الموثقة بالمصدر.",
+  B: "فحص كامل، ولا يُوصف الانزياح بحكم شرعي ولا يُبنى عليه قطع؛ يظهر المرجع ولا يُدَّعى القطع فيما يحتمل الخلاف.",
+  C: "فحص كامل، وكل انزياح يُحال إلى المختص ولا يُبتّ فيه؛ والإجابة مقيَّدة بما هو معتمد أو ببيان وجوده أو بالامتناع.",
+  D: "لا يُفحص ولا يُحكم فيه: النظام يتوقف ويحوّل إلى جهة مؤهلة. الوقف هنا نتيجة معتبرة لا فشل.",
 };
 
 export const EXAMPLE = {
@@ -151,12 +132,6 @@ export function InputSection() {
       id="step-1"
       number={1}
       title="الإدخال والتوصيف"
-      subtitle="النص الأصلي المرجعي والنص المشتق الخاضع للمراجعة"
-      aside={
-        <StatusChip tone={ready ? "verified" : "neutral"} icon={ready ? "check" : "pending"}>
-          {ready ? "جاهز للفحص" : "بانتظار المدخلات"}
-        </StatusChip>
-      }
     >
       <div className="grid grid-cols-1 gap-space-md rounded-lg border border-outline-variant bg-surface-container-low p-space-md md:grid-cols-3">
         <Pills
@@ -186,23 +161,15 @@ export function InputSection() {
             <option value="en">الإنجليزية</option>
             <option value="fr">الفرنسية</option>
           </select>
-          <span className={cx(t.bodySm, "text-on-surface-variant")}>
-            بنك القيود يحمل مقابلات معتمدة لهاتين اللغتين.
-          </span>
         </div>
       </div>
 
       <div className="rounded-lg border border-outline-variant bg-surface-container-low p-space-md">
         <p className={cx(t.labelSm, "font-semibold text-on-surface")}>
-          ضبط الاستجابة — {LEVELS.find((level) => level.id === audit.contentLevel)?.label}
+          ما يفعله موزون في {LEVELS.find((level) => level.id === audit.contentLevel)?.label}
         </p>
         <p className={cx(t.bodySm, "mt-space-xs text-on-surface-variant")}>
-          <span className="font-medium text-on-surface">نطاق المستوى في الحزمة: </span>
-          {LEVEL_MEANING[audit.contentLevel].scope}
-        </p>
-        <p className={cx(t.bodySm, "mt-space-xs text-on-surface-variant")}>
-          <span className="font-medium text-on-surface">ما يفعله موزون هنا: </span>
-          {LEVEL_MEANING[audit.contentLevel].handling}
+          {LEVEL_MEANING[audit.contentLevel]}
         </p>
         <p className={cx(t.bodySm, "mt-space-sm border-t border-outline-variant pt-space-xs text-on-surface-variant")}>
           موزون أداة مدعومة بالذكاء الاصطناعي: ما يصدره قياسُ أمانةِ نقلٍ بين نصين، لا فتوى، ولا ترجيحٌ لمذهب، ولا حكمٌ على قائل.
