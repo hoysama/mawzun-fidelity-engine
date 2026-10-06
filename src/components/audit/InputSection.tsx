@@ -31,24 +31,6 @@ const LEVELS: { id: ContentLevel; label: string }[] = [
   { id: "D", label: "المستوى د" },
 ];
 
-/**
- * The four levels exactly as the organiser's reference package defines them,
- * with what موزون does at each one beside them.
- *
- * The level is not a severity dial: it decides how far the output may go. At
- * (أ) a direct, sourced statement is owed; at (ب) certainty must not be claimed
- * where there is room for difference; at (ج) the answer is bound to what is
- * approved or referred onward; at (د) no independent ruling may be given at all.
- * موزون measures transmission, so quoting the level's own wording keeps a
- * reviewer from reading its verdict as broader than the level allows.
- */
-const LEVEL_MEANING: Record<ContentLevel, string> = {
-  A: "فحص كامل: القيود الحتمية والمعجمية، والمطابقة الحرفية للاقتباس القرآني. الأصل في هذا المستوى الإجابة المباشرة الموثقة بالمصدر.",
-  B: "فحص كامل، ولا يُوصف الانزياح بحكم شرعي ولا يُبنى عليه قطع؛ يظهر المرجع ولا يُدَّعى القطع فيما يحتمل الخلاف.",
-  C: "فحص كامل، وكل انزياح يُحال إلى المختص ولا يُبتّ فيه؛ والإجابة مقيَّدة بما هو معتمد أو ببيان وجوده أو بالامتناع.",
-  D: "لا يُفحص ولا يُحكم فيه: النظام يتوقف ويحوّل إلى جهة مؤهلة. الوقف هنا نتيجة معتبرة لا فشل.",
-};
-
 export const EXAMPLE = {
   sourceText: "لا يجوز بيع الطعام قبل قبضه، ويجب على البائع بيانه للمشتري.",
   derivedText:
@@ -150,30 +132,15 @@ export function InputSection() {
         />
         <div className="flex flex-col gap-space-xs">
           <span className={cx(t.label, "font-semibold text-on-surface")}>اللغة الهدف</span>
-          <select
-            value={audit.targetLanguage}
-            onChange={(event) => audit.setTargetLanguage(event.target.value)}
+          <span
             className={cx(
               t.labelSm,
               "rounded-lg border border-outline-variant bg-surface-container-lowest px-space-sm py-2 text-on-surface",
             )}
           >
-            <option value="en">الإنجليزية</option>
-            <option value="fr">الفرنسية</option>
-          </select>
+            الإنجليزية
+          </span>
         </div>
-      </div>
-
-      <div className="rounded-lg border border-outline-variant bg-surface-container-low p-space-md">
-        <p className={cx(t.labelSm, "font-semibold text-on-surface")}>
-          ما يفعله موزون في {LEVELS.find((level) => level.id === audit.contentLevel)?.label}
-        </p>
-        <p className={cx(t.bodySm, "mt-space-xs text-on-surface-variant")}>
-          {LEVEL_MEANING[audit.contentLevel]}
-        </p>
-        <p className={cx(t.bodySm, "mt-space-sm border-t border-outline-variant pt-space-xs text-on-surface-variant")}>
-          موزون أداة مدعومة بالذكاء الاصطناعي: ما يصدره قياسُ أمانةِ نقلٍ بين نصين، لا فتوى، ولا ترجيحٌ لمذهب، ولا حكمٌ على قائل.
-        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-space-lg lg:grid-cols-2">

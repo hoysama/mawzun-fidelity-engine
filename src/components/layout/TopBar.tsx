@@ -38,7 +38,6 @@ export function TopBar() {
       <header className="fixed top-0 right-0 left-0 z-40 flex h-16 items-center justify-between border-b border-outline-variant bg-surface/95 px-margin-desktop backdrop-blur-xl">
         <div className="flex items-baseline gap-space-sm">
           <span className={cx(t.h4, "tracking-tight text-moss-700")}>مَوْزُون</span>
-          <span className={cx(t.code, "font-normal text-on-surface-variant")}>(مقياس أمانة النقل)</span>
         </div>
 
         <div className="flex items-center gap-space-sm">
