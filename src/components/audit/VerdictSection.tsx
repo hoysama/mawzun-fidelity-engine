@@ -20,10 +20,10 @@ import type { AuditResult } from "@/lib/audit/types";
 import type { Citation } from "@/lib/audit/rag-types";
 import { CitationList, CodeChip, FINDING_LABEL, FINDING_TONE, InsetPanel, StatusChip, WorkflowCard } from "./parts";
 
-const VERDICTS: { id: AuditResult["verdict"]; label: string; latin: string }[] = [
-  { id: "faithful", label: "مطابق", latin: "Matched" },
-  { id: "needs_revision", label: "يحتاج تعديل", latin: "Needs Revision" },
-  { id: "refer", label: "وقف وتحويل", latin: "Stop & Escalate" },
+const VERDICTS: { id: AuditResult["verdict"]; label: string }[] = [
+  { id: "faithful", label: "مطابق" },
+  { id: "needs_revision", label: "يحتاج تعديل" },
+  { id: "refer", label: "وقف وتحويل" },
 ];
 
 // Package citations from the shipped document carry no hash (the file is local,
@@ -81,7 +81,7 @@ export function VerdictSection() {
     <WorkflowCard
       id="step-4"
       number={4}
-      title="الحكم (The Verdict)"
+      title="الحكم"
       subtitle="قرار واحد بثلاث حالات، ومعه السبب والموضع والدليل"
       aside={
         result ? (
@@ -110,9 +110,7 @@ export function VerdictSection() {
                     : "bg-surface-container text-on-surface-variant opacity-60",
               )}
             >
-              <span className={cx(t.h4, "flex items-center gap-space-xs")}>
-                [{verdict.label}] <span className={cx(t.bodySm, "opacity-80")}>{verdict.latin}</span>
-              </span>
+              <span className={cx(t.h4, "flex items-center gap-space-xs")}>{verdict.label}</span>
               {isActive ? (
                 <StatusChip tone="neutral" className="bg-transparent">
                   الحالة النشطة
@@ -136,7 +134,7 @@ export function VerdictSection() {
           <div className="rounded-xl border border-outline-variant bg-surface-container-low p-space-lg">
             <div className="grid grid-cols-1 gap-space-md md:grid-cols-3">
               <div className="flex flex-col gap-space-xs rounded-lg border border-outline-variant bg-surface-container-lowest p-space-md shadow-sm">
-                <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>الموضع (Location)</span>
+                <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>الموضع</span>
                 <span className={cx(t.h4, "text-on-surface")}>
                   {decisive.length > 0
                     ? decisive.filter((f) => f.end > f.start).length > 0
@@ -153,7 +151,7 @@ export function VerdictSection() {
               </div>
 
               <div className="flex flex-col gap-space-xs rounded-lg border border-outline-variant bg-surface-container-lowest p-space-md shadow-sm md:col-span-2">
-                <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>السبب (Reason)</span>
+                <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>السبب</span>
                 <p className={cx(t.body, "text-on-surface")}>{result.reason}</p>
                 {verdictCitations.length > 0 && (
                   <CitationList citations={verdictCitations} title="حيث يمكن التحقق من الحكم" />
@@ -163,7 +161,7 @@ export function VerdictSection() {
 
             <div className="mt-space-md flex flex-col gap-space-md">
               <div className="flex flex-col gap-space-xs rounded-lg border border-outline-variant bg-surface-container-lowest p-space-md shadow-sm">
-                <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>الدليل (Evidence)</span>
+                <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>الدليل</span>
                 {first ? (
                   <div className="flex flex-col gap-space-xs">
                     <blockquote className={cx(t.body, "rounded-xs bg-surface-container-low p-space-sm italic text-on-surface")}>
@@ -188,7 +186,7 @@ export function VerdictSection() {
 
               <div className="flex flex-col gap-space-xs rounded-lg border border-outline-variant bg-surface-container-lowest p-space-md shadow-sm">
                 <span className={cx(t.labelSm, "font-semibold text-on-surface-variant")}>
-                  الاقتراح (Suggested Correction)
+                  الاقتراح
                 </span>
                 {suggestion ? (
                   <>

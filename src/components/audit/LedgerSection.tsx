@@ -33,7 +33,7 @@ export function LedgerSection() {
       <WorkflowCard
         id="step-5"
         number={5}
-        title="الشهادة والسجل (Certificate & Log)"
+        title="الشهادة والسجل"
         subtitle="شهادة التدقيق وسجل الإجراءات غير القابل للتعديل"
         aside={<StatusChip tone="neutral">بانتظار الفحص</StatusChip>}
       >
@@ -85,7 +85,7 @@ export function LedgerSection() {
     <WorkflowCard
       id="step-5"
       number={5}
-      title="الشهادة والسجل (Certificate & Log)"
+      title="الشهادة والسجل"
       subtitle="شهادة التدقيق وسجل الإجراءات، وكل ما يلزم لإعادة الوصول إلى الحكم نفسه"
       aside={<CodeChip>الحفظ: SHA-256</CodeChip>}
     >

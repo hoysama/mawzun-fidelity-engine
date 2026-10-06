@@ -132,6 +132,14 @@ export function SearchModal({
           <kbd className="hidden sm:inline-block rounded bg-surface-container px-2 py-0.5 font-code-sm text-[11px] text-secondary">
             ESC
           </kbd>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="إغلاق"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary"
+          >
+            <Icon name="close" className="text-lg" />
+          </button>
         </div>
 
         {/* Results List */}

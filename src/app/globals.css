@@ -245,3 +245,88 @@
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   Dark theme.
+
+   Deliberately unlayered: the palette above is emitted by `@theme` into
+   Tailwind's `theme` cascade layer, and unlayered declarations win over
+   layered ones regardless of specificity, so this block reliably repaints
+   the surface/on-surface pairs without touching any light page.
+
+   Scoped to an explicit `data-theme="dark"` on <html>, which the pre-paint
+   script in `layout.tsx` sets from `localStorage.mawzun_theme` (falling back
+   to the OS preference only when nothing is stored). Only the tokens the
+   interface actually paints with are overridden; every surface/on-surface
+   pair below clears WCAG AA (≥ 4.5:1).
+------------------------------------------------------------------- */
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --color-surface: #0f1420;
+  --color-surface-dim: #0b0f18;
+  --color-surface-bright: #1c2432;
+  --color-surface-container-lowest: #0a0e17;
+  --color-surface-container-low: #151b28;
+  --color-surface-container: #1b2231;
+  --color-surface-container-high: #222a3b;
+  --color-surface-container-highest: #2a3345;
+  --color-surface-variant: #222a3b;
+  --color-on-surface: #e6eaf2;
+  --color-on-surface-variant: #b9c0cf;
+  /* The scrim (search/settings overlays) uses `bg-inverse-surface`; in dark
+     mode an inverse of the dark canvas must stay dark, so the scrim reads as
+     a scrim instead of flashing the reader with a light wash. */
+  --color-inverse-surface: #05070d;
+  --color-inverse-on-surface: #e6eaf2;
+
+  /* Structure */
+  --color-outline: #8b93a5;
+  --color-outline-variant: #333c4f;
+  --color-surface-tint: #8fb0e8;
+
+  /* Primary — a light slate that carries white-on-dark buttons in reverse. */
+  --color-primary: #c2d4ff;
+  --color-on-primary: #0b1c30;
+  --color-primary-container: #3a4a66;
+  --color-on-primary-container: #cdd9f2;
+  --color-inverse-primary: #2f3d57;
+  --color-primary-fixed: #24304a;
+  --color-primary-fixed-dim: #35425e;
+  --color-on-primary-fixed: #dbe4f7;
+  --color-on-primary-fixed-variant: #b6c4dd;
+
+  /* Secondary — execution and telemetry. */
+  --color-secondary: #adc6ff;
+  --color-on-secondary: #002e69;
+  --color-secondary-container: #2f4a80;
+  --color-on-secondary-container: #dbe4ff;
+  --color-secondary-fixed: #24314e;
+  --color-secondary-fixed-dim: #3a4a70;
+  --color-on-secondary-fixed: #d8e2ff;
+  --color-on-secondary-fixed-variant: #c3d3f5;
+
+  /* Tertiary — the "resolved / attested" accent. */
+  --color-tertiary: #7ee2b0;
+  --color-on-tertiary: #00311f;
+  --color-tertiary-container: #1f5c41;
+  --color-on-tertiary-container: #9df3c6;
+  --color-tertiary-fixed: #15412e;
+  --color-tertiary-fixed-dim: #2c6a4c;
+  --color-on-tertiary-fixed: #b8f5d3;
+  --color-on-tertiary-fixed-variant: #9ee7bf;
+
+  /* Error — violations of the approved constraints. */
+  --color-error: #ffb4ab;
+  --color-on-error: #5c0f0f;
+  --color-error-container: #4a1f1f;
+  --color-on-error-container: #ffdad6;
+
+  --color-background: #0f1420;
+  --color-on-background: #e6eaf2;
+}

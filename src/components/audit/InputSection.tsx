@@ -18,17 +18,17 @@ import { t } from "@/lib/typography";
 import type { ContentLevel, WorkType } from "@/lib/audit/types";
 import { CodeChip, StatusChip, WorkflowCard } from "./parts";
 
-const WORK_TYPES: { id: WorkType; label: string; latin: string }[] = [
-  { id: "translate", label: "ترجمة", latin: "Translation" },
-  { id: "summarize", label: "تلخيص", latin: "Summary" },
-  { id: "paraphrase", label: "إعادة صياغة", latin: "Paraphrase" },
+const WORK_TYPES: { id: WorkType; label: string }[] = [
+  { id: "translate", label: "ترجمة" },
+  { id: "summarize", label: "تلخيص" },
+  { id: "paraphrase", label: "إعادة صياغة" },
 ];
 
-const LEVELS: { id: ContentLevel; label: string; latin: string }[] = [
-  { id: "A", label: "المستوى أ", latin: "Canonical" },
-  { id: "B", label: "المستوى ب", latin: "Commentary" },
-  { id: "C", label: "المستوى ج", latin: "Contested" },
-  { id: "D", label: "المستوى د", latin: "Personal case" },
+const LEVELS: { id: ContentLevel; label: string }[] = [
+  { id: "A", label: "المستوى أ" },
+  { id: "B", label: "المستوى ب" },
+  { id: "C", label: "المستوى ج" },
+  { id: "D", label: "المستوى د" },
 ];
 
 /**
@@ -96,24 +96,20 @@ function useShortHash(text: string): string | null {
 
 function Pills<T extends string>({
   label,
-  latin,
   options,
   value,
   onChange,
   columns,
 }: {
   label: string;
-  latin: string;
-  options: { id: T; label: string; latin: string }[];
+  options: { id: T; label: string }[];
   value: T;
   onChange: (next: T) => void;
   columns: string;
 }) {
   return (
     <div className="flex flex-col gap-space-xs">
-      <span className={cx(t.label, "font-semibold text-on-surface")}>
-        {label} <span className={cx(t.bodySm, "text-on-surface-variant")}>({latin})</span>
-      </span>
+      <span className={cx(t.label, "font-semibold text-on-surface")}>{label}</span>
       <div className={cx("grid gap-space-xs", columns)}>
         {options.map((option) => (
           <label key={option.id} className="cursor-pointer">
@@ -154,8 +150,8 @@ export function InputSection() {
     <WorkflowCard
       id="step-1"
       number={1}
-      title="الإدخال والتوصيف (Input & Classification)"
-      subtitle="تغذية النص الأصلي المرجعي والنص المشتق الخاضع للمراجعة الدلالية"
+      title="الإدخال والتوصيف"
+      subtitle="النص الأصلي المرجعي والنص المشتق الخاضع للمراجعة"
       aside={
         <StatusChip tone={ready ? "verified" : "neutral"} icon={ready ? "check" : "pending"}>
           {ready ? "جاهز للفحص" : "بانتظار المدخلات"}
@@ -165,7 +161,6 @@ export function InputSection() {
       <div className="grid grid-cols-1 gap-space-md rounded-lg border border-outline-variant bg-surface-container-low p-space-md md:grid-cols-3">
         <Pills
           label="نوع العمل"
-          latin="Operation Type"
           options={WORK_TYPES}
           value={audit.workType}
           onChange={audit.setWorkType}
@@ -173,16 +168,13 @@ export function InputSection() {
         />
         <Pills
           label="مستوى المحتوى"
-          latin="Content Level"
           options={LEVELS}
           value={audit.contentLevel}
           onChange={audit.setContentLevel}
           columns="grid-cols-4"
         />
         <div className="flex flex-col gap-space-xs">
-          <span className={cx(t.label, "font-semibold text-on-surface")}>
-            اللغة الهدف <span className={cx(t.bodySm, "text-on-surface-variant")}>(Target)</span>
-          </span>
+          <span className={cx(t.label, "font-semibold text-on-surface")}>اللغة الهدف</span>
           <select
             value={audit.targetLanguage}
             onChange={(event) => audit.setTargetLanguage(event.target.value)}
@@ -191,8 +183,8 @@ export function InputSection() {
               "rounded-xs border border-outline-variant bg-surface-container-lowest px-space-sm py-2 text-on-surface",
             )}
           >
-            <option value="en">الإنجليزية (English)</option>
-            <option value="fr">الفرنسية (Français)</option>
+            <option value="en">الإنجليزية</option>
+            <option value="fr">الفرنسية</option>
           </select>
           <span className={cx(t.bodySm, "text-on-surface-variant")}>
             بنك القيود يحمل مقابلات معتمدة لهاتين اللغتين.
@@ -225,7 +217,7 @@ export function InputSection() {
               className={cx(t.label, "flex items-center gap-space-xs font-semibold text-on-surface")}
             >
               <span className="h-2 w-2 rounded-full bg-secondary" />
-              النص الأصلي (Original Text)
+              النص الأصلي
             </label>
             <CodeChip>المرجع: الحزمة العلمية المعتمدة</CodeChip>
           </div>
@@ -254,7 +246,7 @@ export function InputSection() {
               className={cx(t.label, "flex items-center gap-space-xs font-semibold text-on-surface")}
             >
               <span className="h-2 w-2 rounded-full bg-secondary-container" />
-              النص المشتق (Derived Text)
+              النص المشتق
             </label>
             <CodeChip>مخرج خاضع للمراجعة</CodeChip>
           </div>
@@ -264,7 +256,7 @@ export function InputSection() {
             rows={7}
             value={audit.derivedText}
             onChange={(event) => audit.setDerivedText(event.target.value)}
-            placeholder="Paste the translation / summary / paraphrase here."
+            placeholder="الصق الترجمة أو الملخّص أو إعادة الصياغة هنا."
             className={cx(
               t.body,
               "w-full resize-y rounded-lg bg-surface-container-low p-space-md leading-relaxed text-on-surface transition-all focus:bg-surface-container-lowest focus:shadow-md focus:outline-none",

@@ -53,7 +53,7 @@ export function ConstraintsSection() {
     <WorkflowCard
       id="step-2"
       number={2}
-      title="القيود المعتمدة (Approved Constraints)"
+      title="القيود المعتمدة"
       subtitle="القيود مستوردة من الحزمة العلمية المعتمدة، لا من رأي النظام، ولكل قيد أصله"
       aside={
         <StatusChip tone="verified" icon="verified">

@@ -32,6 +32,21 @@ export default function RootLayout(props: LayoutProps<"/">) {
     >
       <head>
         {/*
+          Theme resolution, before first paint.
+
+          Runs synchronously in <head> so `data-theme` and `color-scheme` are
+          on <html> before the browser paints: a stored choice wins, the OS
+          preference is consulted only when nothing is stored, and the default
+          is light. Without this the first frame is always light and a dark
+          reader sees a flash.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              '(function(){try{var k="mawzun_theme";var s=localStorage.getItem(k);var m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;var t=s==="dark"||s==="light"?s:(m?"dark":"light");var d=document.documentElement;d.setAttribute("data-theme",t);d.style.colorScheme=t;}catch(e){}})();',
+          }}
+        />
+        {/*
           Material Symbols is an icon font, so it is not available through
           next/font and has to be loaded with a plain stylesheet link.
         */}

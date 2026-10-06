@@ -92,9 +92,7 @@ export function AuditWorkspace() {
               <div className="flex flex-col gap-space-xs">
                 <h2 className={cx(t.h2, "text-on-surface")}>بقية الأقسام تُفتح بعد التنفيذ</h2>
                 <p className={cx(t.body, "text-on-surface-variant")}>
-                  ضع النص الأصلي والنص المشتق، ثم اضغط «نفّذ الفحص ثلاثي الطبقات». عندها يظهر
-                  القيود المعتمدة، ثم الفحص بطبقاته، ثم الحكم، ثم الشهادة والسجل — بهذا الترتيب،
-                  وكل قسم مبنيّ على نتيجة فحصك أنت لا على مثال جاهز.
+                  كل قسم بعد هذه الخطوة يُبنى على نتيجة فحصك أنت، لا على مثال جاهز.
                 </p>
                 {audit.isRunning && (
                   <StatusChip tone="revision" icon="progress_activity">
@@ -131,13 +129,10 @@ export function AuditWorkspace() {
             "w-full flex flex-col items-center justify-between gap-space-sm px-margin-desktop text-on-surface-variant md:flex-row",
           )}
         >
-          <div className="flex items-center gap-space-md">
-            <span>مَوْزُون: يقيس أمانة النقل، ولا يفتي ولا يرجّح مذهبًا</span>
-            <span>SHA-256 RECORD</span>
-          </div>
+          <span>مَوْزُون: يقيس أمانة النقل، ولا يفتي ولا يرجّح مذهبًا</span>
           <div className="flex items-center gap-space-lg">
+            <span>SHA-256</span>
             <span>المراجع البشري صاحب القرار</span>
-            <span>© 2026 MAWZŪN RESEARCH WORKSPACE</span>
           </div>
         </div>
       </footer>

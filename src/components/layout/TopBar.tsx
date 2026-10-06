@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { cx } from "@/lib/cx";
-import { STAGES, unlockedStageIds } from "@/lib/stages";
-import { useAudit } from "@/context/AuditContext";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { t } from "@/lib/typography";
 import { SearchModal } from "@/components/layout/SearchModal";
 import { SettingsModal } from "@/components/layout/SettingsModal";
@@ -12,10 +11,11 @@ import { SettingsModal } from "@/components/layout/SettingsModal";
 /**
  * Global header.
  *
- * Follows the design's header composition: brand block, section navigation, and
- * the tool actions on the trailing edge. The earlier notification bell is gone —
- * it shipped a permanently-lit red dot that announced nothing, and the design
- * this header is ported from has no such control.
+ * The brand block, the search entry and the two controls it actually operates.
+ * The workflow stepper is not here: the five stages are sections of the
+ * workspace, and the workspace's own session bar carries the stepper beside the
+ * content it indexes. Duplicating it into the chrome gave every route a
+ * navigation whose targets only exist on one of them.
  */
 export function TopBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -33,45 +33,13 @@ export function TopBar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const audit = useAudit();
-  // Only the sections that exist are offered: before a run that is step one
-  // alone, because the rest of the workflow describes an output there isn't one.
-  const unlocked = unlockedStageIds(audit.result !== null);
-  const nav = STAGES.filter((stage) => unlocked.includes(stage.id));
-
   return (
     <>
       <header className="fixed top-0 right-0 left-0 z-40 flex h-16 items-center justify-between border-b border-outline-variant bg-surface/95 px-margin-desktop backdrop-blur-xl">
-        <div className="flex items-center gap-space-lg">
-          <div className="flex items-baseline gap-space-sm">
-            <span className={cx(t.h4, "tracking-tight text-primary")}>مَوْزُون | MAWZŪN</span>
-            <span className={cx(t.code, "font-normal text-on-surface-variant")}>
-              (مقياس أمانة النقل)
-            </span>
-          </div>
-          <span className="flex items-center gap-space-xs rounded border border-outline-variant bg-surface-container px-space-sm py-0.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-tertiary-container" />
-            <span className={cx(t.code, "text-on-surface")}>ONLINE / v1.0</span>
-          </span>
+        <div className="flex items-baseline gap-space-sm">
+          <span className={cx(t.h4, "tracking-tight text-primary")}>مَوْزُون | MAWZŪN</span>
+          <span className={cx(t.code, "font-normal text-on-surface-variant")}>(مقياس أمانة النقل)</span>
         </div>
-
-        <nav className="hidden items-center gap-space-xs md:flex">
-          {nav.map((stage, index) => (
-            <a
-              key={stage.id}
-              href={`#${stage.id}`}
-              className={cx(
-                t.label,
-                "rounded px-space-md py-1.5 transition-colors",
-                index === 0 && nav.length === 1
-                  ? "bg-primary-container text-on-primary"
-                  : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface",
-              )}
-            >
-              {stage.title}
-            </a>
-          ))}
-        </nav>
 
         <div className="flex items-center gap-space-sm">
           <button
@@ -89,6 +57,8 @@ export function TopBar() {
               ⌘K
             </kbd>
           </button>
+
+          <ThemeToggle />
 
           <button
             type="button"

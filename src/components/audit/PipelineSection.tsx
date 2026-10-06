@@ -29,26 +29,23 @@ import {
 } from "./parts";
 import { SourcesPanel } from "./SourcesPanel";
 
-const LAYERS: { id: LayerId; ordinal: string; title: string; latin: string; note: string }[] = [
+const LAYERS: { id: LayerId; ordinal: string; title: string; note: string }[] = [
   {
     id: "L1",
     ordinal: "الطبقة 01",
     title: "الحتمية",
-    latin: "Deterministic",
     note: "بلا ذكاء اصطناعي: الأرقام والإحالات وألفاظ درجة الثبوت، مقارنة وجود ومطابقة.",
   },
   {
     id: "L2",
     ordinal: "الطبقة 02",
     title: "المعجمية",
-    latin: "Lexical",
     note: "ضبط المسرد والمصطلح، وقوة الحكم، وأدوات الشرط، بحثًا في جداول معتمدة.",
   },
   {
     id: "L3",
     ordinal: "الطبقة 03",
     title: "الدلالية",
-    latin: "Semantic",
     note: "وقائع منظّمة من نموذج، وكل اقتباس يُتحقق من وجوده في النص حرفيًا.",
   },
 ];
@@ -75,7 +72,7 @@ export function PipelineSection() {
     <WorkflowCard
       id="step-3"
       number={3}
-      title="الفحص (Verification Pipeline)"
+      title="الفحص"
       subtitle="ثلاث طبقات صارمة دون خلط مفاهيمي، ولكل طبقة قوة إثبات مختلفة"
       aside={
         <span className={cx(t.code, "flex items-center gap-space-sm text-on-surface-variant")}>
@@ -125,9 +122,7 @@ export function PipelineSection() {
                   )}
                 </div>
 
-                <h3 className={cx(t.h4, "text-on-surface")}>
-                  {layer.title} <span className={cx(t.bodySm, "text-on-surface-variant")}>({layer.latin})</span>
-                </h3>
+                <h3 className={cx(t.h4, "text-on-surface")}>{layer.title}</h3>
                 <p className={cx(t.bodySm, "text-on-surface-variant")}>{layer.note}</p>
 
                 {layer.id === "L3" ? (
