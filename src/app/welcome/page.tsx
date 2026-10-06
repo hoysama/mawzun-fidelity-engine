@@ -6,10 +6,9 @@ import { StepsSection } from "@/components/landing/StepsSection";
 /**
  * The welcome route.
  *
- * A landing page for the audit workspace at `/`, assembled from server
- * components: the hero's only client island is the source-text field, which
- * writes the reviewer's text to session storage and hands it to the workspace
- * with a document navigation.
+ * A purely introductory landing page for the audit workspace at `/`, assembled
+ * from server components: it holds no input at all. The hero carries a single
+ * link into the workspace, where the reviewer types the source text.
  */
 export const metadata: Metadata = {
   title: "موزون | مقياس أمانة النقل",

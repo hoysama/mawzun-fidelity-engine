@@ -41,16 +41,6 @@ import type { AuditInput, ContentLevel, WorkType } from "@/lib/audit/types";
 
 const STORAGE_KEY = "mawzun_audit_state_v1";
 
-/**
- * One-shot hand-off from the landing page.
- *
- * The welcome hero writes the reviewer's source text here and navigates with a
- * full document load; the store below consumes it during initialisation. It is
- * deliberately session-scoped and removed as it is read, so a reload — or a
- * direct visit to `/` — never re-seeds a field the reviewer did not type into.
- */
-const PENDING_SOURCE_KEY = "mawzun_pending_source";
-
 interface PersistedState {
   sourceText: string;
   derivedText: string;
@@ -104,19 +94,6 @@ function loadFromStorage(): PersistedState {
     base = raw ? { ...EMPTY, ...(JSON.parse(raw) as Partial<PersistedState>) } : EMPTY;
   } catch {
     base = EMPTY;
-  }
-
-  // Consume the landing hand-off exactly once: seed the source text only when
-  // it actually carries something, then remove the key either way. A blank or
-  // whitespace-only value leaves the field as empty as a direct visit does.
-  try {
-    const pending = window.sessionStorage.getItem(PENDING_SOURCE_KEY);
-    window.sessionStorage.removeItem(PENDING_SOURCE_KEY);
-    if (pending !== null && pending.trim().length > 0) {
-      base = { ...base, sourceText: pending };
-    }
-  } catch {
-    // No session storage (private mode, sandbox): behave as a direct visit.
   }
 
   return base;
