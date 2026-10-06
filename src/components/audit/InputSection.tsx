@@ -107,7 +107,11 @@ export function InputSection() {
   const derivedHash = useShortHash(audit.derivedText);
   const words = (value: string) => value.trim().split(/\s+/).filter(Boolean).length;
 
-  const ready = audit.sourceText.trim().length > 0 && audit.derivedText.trim().length > 0;
+  // The audit can start from the source alone: a pasted hadith or verse is
+  // enough to run. The derived text is optional, and the engine reports an
+  // absent transmission honestly (every source element comes back missing)
+  // rather than blocking the run. Only the source gates the button.
+  const ready = audit.sourceText.trim().length > 0;
 
   return (
     <WorkflowCard

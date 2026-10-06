@@ -152,9 +152,13 @@ export async function POST(req: NextRequest) {
   const sourceText = readString(body.sourceText).trim();
   const derivedText = readString(body.derivedText).trim();
 
-  if (!sourceText || !derivedText) {
+  // The derived text is optional: a source-only run is allowed, and the engine
+  // reports the absent transmission honestly instead of refusing the request.
+  // The source, by contrast, is required — there is no audit without it — and a
+  // missing source is named on its own, not as one of two missing texts.
+  if (!sourceText) {
     return NextResponse.json(
-      { ok: false, error: "النص الأصلي والنص المشتق مطلوبان معًا." },
+      { ok: false, error: "النص الأصلي مطلوب." },
       { status: 400 },
     );
   }

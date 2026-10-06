@@ -160,8 +160,11 @@ export function AuditProvider({ children }: { children: ReactNode }) {
   const run = useCallback(async () => {
     const input = buildInput();
 
-    if (!input.sourceText.trim() || !input.derivedText.trim()) {
-      setError("النص الأصلي والنص المشتق مطلوبان معًا.");
+    // Only the source is required. An empty derived is a valid input: it means
+    // nothing was transmitted, and the engine reports that as needs_revision
+    // with the source-side constraints marked missing — never as faithful.
+    if (!input.sourceText.trim()) {
+      setError("النص الأصلي مطلوب.");
       return;
     }
 

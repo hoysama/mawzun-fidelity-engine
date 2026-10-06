@@ -61,6 +61,16 @@ const NEEDS_MODEL_REASON =
   "الطبقة الدلالية لم تُشغَّل في هذا البناء: تحتاج ربط نموذج. ما كان يمكن كشفه بالاستدلال الدلالي غير مفحوص.";
 
 /**
+ * Declared when the run has a source but no derived text. The semantic layer
+ * compares two texts; with one side empty there is nothing to compare, so
+ * calling a model would spend a request and invite a confident answer about
+ * nothing. The layer is skipped and said to be skipped — an absent layer must
+ * never look like a passed one.
+ */
+const NO_DERIVED_REASON =
+  "الطبقة الدلالية لم تُشغَّل: المشتق فارغ، فلا نص يقارنه النموذج. ما كان يمكن كشفه بالاستدلال الدلالي غير مفحوص — أضف النص المشتق لفحصه.";
+
+/**
  * The live retrieval boundary, backed by the connectors in `rag.ts`.
  *
  * One instance per run, so the per-run ceiling and the lookup cache are scoped
@@ -237,24 +247,30 @@ export async function runAudit(input: AuditInput, options: AuditRunOptions = {})
     alignment = l2.alignment;
 
     const provider = options.semantic ?? declaredGapProvider(NEEDS_MODEL_REASON);
-    try {
-      const l3 = await provider.run(ctx);
-      const cited = await attachQuranicCitations(l3.findings, ctx, retriever, coverage);
-      findings.push(...cited);
-      coverage.push(...l3.coverage);
-      checked += l3.checked;
-      model = { id: l3.model, promptHash: l3.promptHash };
-      rejected = l3.rejected;
-    } catch (error) {
-      // A failing provider must not cost us the deterministic findings. The
-      // failure is recorded as a declared gap, so the verdict states that the
-      // semantic layer did not produce a result rather than passing quietly.
-      const detail = error instanceof Error ? error.message : String(error);
-      coverage.push({
-        layer: "L3",
-        kind: "condition",
-        reason: `فشلت الطبقة الدلالية في هذا التشغيل: ${detail}. ما كان يمكن كشفه بالاستدلال الدلالي غير مفحوص.`,
-      });
+    if (input.derivedText.trim().length === 0) {
+      // No derived text: the semantic comparison has nothing to judge. The
+      // layer is skipped and declared, not run against an empty string.
+      coverage.push({ layer: "L3", kind: "condition", reason: NO_DERIVED_REASON });
+    } else {
+      try {
+        const l3 = await provider.run(ctx);
+        const cited = await attachQuranicCitations(l3.findings, ctx, retriever, coverage);
+        findings.push(...cited);
+        coverage.push(...l3.coverage);
+        checked += l3.checked;
+        model = { id: l3.model, promptHash: l3.promptHash };
+        rejected = l3.rejected;
+      } catch (error) {
+        // A failing provider must not cost us the deterministic findings. The
+        // failure is recorded as a declared gap, so the verdict states that the
+        // semantic layer did not produce a result rather than passing quietly.
+        const detail = error instanceof Error ? error.message : String(error);
+        coverage.push({
+          layer: "L3",
+          kind: "condition",
+          reason: `فشلت الطبقة الدلالية في هذا التشغيل: ${detail}. ما كان يمكن كشفه بالاستدلال الدلالي غير مفحوص.`,
+        });
+      }
     }
   }
 

@@ -151,6 +151,15 @@ export function computeVerdict(
     };
   }
 
+  if (contentSize(source) > 0 && contentSize(derived) === 0) {
+    return {
+      verdict: "needs_revision",
+      reason:
+        "المشتق فارغ: لا يحمل أي نص، فلم يُنقل شيء من الأصل. كل عنصر مصدري مطبَّق يقابله الفراغ، فلا يُشهد للنقل بأمانة — القيود المصدرية المفحوصة مسجَّلة «مفقودة»، والفحص يحتاج إدخال النص المشتق الفعلي." +
+        scopeClause,
+    };
+  }
+
   if (checkedTotal === 0) {
     return {
       verdict: "refer",
