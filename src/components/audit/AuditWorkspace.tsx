@@ -120,20 +120,6 @@ export function AuditWorkspace() {
         )}
       </div>
 
-      <footer className="w-full border-t border-moss-200 bg-moss-50 py-space-md">
-        <div
-          className={cx(
-            t.code,
-            "w-full flex flex-col items-center justify-between gap-space-sm px-margin-desktop text-on-surface-variant md:flex-row",
-          )}
-        >
-          <span>مَوْزُون: يقيس أمانة النقل، ولا يفتي ولا يرجّح مذهبًا</span>
-          <div className="flex items-center gap-space-lg">
-            <span>SHA-256</span>
-            <span>المراجع البشري صاحب القرار</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
