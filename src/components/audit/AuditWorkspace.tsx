@@ -43,14 +43,6 @@ export function AuditWorkspace() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="w-full border-b border-moss-200 bg-linear-to-b from-moss-50 to-surface-container-lowest px-margin-desktop py-space-md">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-space-md md:flex-row md:items-center">
-          <div className="flex items-center gap-space-sm">
-            <span className={cx(t.heroSm, "text-moss-700")}>مقياس أمانة النقل</span>
-          </div>
-        </div>
-      </div>
-
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-space-xl px-margin-desktop py-space-xl">
         <InputSection />
 
