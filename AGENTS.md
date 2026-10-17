@@ -23,7 +23,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   - Execute tools: `bunx <tool>` instead of `npx`
 - The reference lockfile is `bun.lock` (committed). Never create or update `package-lock.json` / `yarn.lock` / `pnpm-lock.yaml`.
 - The legacy npm `package-lock.json` was removed during the Bun migration (tag `pre-chore-bun-migration-2026-10-01`) and replaced by `bun.lock` generated with `bun install`.
-- Enforcement: `package.json` declares `"packageManager": "bun@1.4.2"` and the `preinstall` guard `scripts/ensure-bun.mjs` aborts any dependency installation started by `npm`, `yarn` or `pnpm`.
+- Enforcement: `package.json` declares `"packageManager": "bun@1.4.3"` and the `preinstall` guard `scripts/ensure-bun.mjs` aborts any dependency installation started by `npm`, `yarn` or `pnpm`.
 
 ## 2) Branches and the `main` branch
 

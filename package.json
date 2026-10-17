@@ -2,7 +2,7 @@
   "name": "mawzun-project",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "bun@1.4.2",
+  "packageManager": "bun@1.4.3",
   "scripts": {
     "preinstall": "node scripts/ensure-bun.mjs",
     "dev": "next dev",
